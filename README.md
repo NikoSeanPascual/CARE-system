@@ -1,2 +1,2 @@
 CURRENTLY FINISHED:
-VALIDATION(Login and Signup) - ✅
+1. VALIDATION(Login and Signup) - ✅
