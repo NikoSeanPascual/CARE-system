@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C.A.R.E. - Campus Health System</title>
+    <link rel="stylesheet" href="css/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+<div class="bg-orb orb-3"></div>
+
+<main class="auth-wrapper">
+    <section class="brand-side">
+        <div class="brand-content">
+            <div class="brand-badge">
+                <span class="pulse-dot"></span> Official Campus Clinic Portal
+            </div>
+            <h1>C.A.R.E.</h1>
+            <p class="brand-subtitle">Campus Health, Medical Assessment, & Record Entry System</p>
+
+            <div class="feature-pills">
+                <div class="pill">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                    </svg>
+                    <span>Real-time Triage</span>
+                </div>
+                <div class="pill">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    <span>Local Data Privacy</span>
+                </div>
+                <div class="pill">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                    <span>Digital Health Passes</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="brand-footer">
+            <p>© 2026 CARE Health System • Built for Campus Care</p>
+        </div>
+    </section>
+
+    <section class="form-side">
+        <div class="form-card">
+            <div class="tab-container">
+                <div class="tab-glider" id="tabGlider"></div>
+                <button id="toggleLoginBtn" class="tab-btn active" onclick="switchTab('login')">Sign In</button>
+                <button id="toggleSignupBtn" class="tab-btn" onclick="switchTab('signup')">Register</button>
+            </div>
+
+            <div id="alertBox" class="alert-box hidden"></div>
+            <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+                <div class="form-header">
+                    <h2>Welcome Back</h2>
+                    <p>Access your health records and clinic services.</p>
+                </div>
+
+                <div class="input-field">
+                    <label for="loginRole">Account Type</label>
+                    <div class="input-wrapper">
+                        <select id="loginRole" required>
+                            <option value="student">Student / Patient</option>
+                            <option value="staff">Clinic Assistant / Staff</option>
+                            <option value="admin">System Admin / Head Nurse</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-field">
+                    <label for="loginIdentifier">Student ID or Email</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="loginIdentifier" placeholder="e.g. 2024-12345" required>
+                    </div>
+                </div>
+
+                <div class="input-field">
+                    <label for="loginPassword">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span>Sign In to Dashboard</span>
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </button>
+            </form>
+
+            <form id="signupForm" class="auth-form hidden" onsubmit="handleSignup(event)">
+                <div class="form-header">
+                    <h2>Create Student Account</h2>
+                    <p>Register once to simplify all future campus clinic visits.</p>
+                </div>
+
+                <div class="input-field">
+                    <label for="signupFullName">Full Name</label>
+                    <input type="text" id="signupFullName" placeholder="e.g. Juan Dela Cruz" required>
+                </div>
+
+                <div class="input-field">
+                    <label for="signupStudentID">Student ID Number</label>
+                    <input type="text" id="signupStudentID" placeholder="e.g. 2024-12345" required>
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-field">
+                        <label for="signupGrade">Year / Level</label>
+                        <select id="signupGrade" required>
+                            <option value="">Select Level</option>
+                            <option value="Grade 11">Grade 11</option>
+                            <option value="Grade 12">Grade 12</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                    <div class="input-field">
+                        <label for="signupSection">Section</label>
+                        <input type="text" id="signupSection" placeholder="e.g. BSIT 2-A" required>
+                    </div>
+                </div>
+
+                <div class="input-field">
+                    <label for="signupContact">Emergency Contact</label>
+                    <input type="tel" id="signupContact" placeholder="09123456789" required>
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-field">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" placeholder="••••••••" required minlength="6">
+                    </div>
+                    <div class="input-field">
+                        <label for="signupConfirmPassword">Confirm Password</label>
+                        <input type="password" id="signupConfirmPassword" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <div class="form-group terms-group">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="signupTerms" required>
+                        <span class="checkmark"></span>
+                        <span class="terms-text">
+                            I agree to the <a href="#" onclick="openTermsModal(event)">Terms & Conditions</a> and <a
+                                href="#" onclick="openTermsModal(event)">Data Privacy Notice</a>.
+                        </span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span>Complete Registration</span>
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<div id="termsModal" class="modal-overlay hidden" onclick="closeTermsModalOnOverlay(event)">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>Terms & Conditions & Privacy Notice</h3>
+            <button type="button" class="modal-close-btn" onclick="closeTermsModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <h4>1. Purpose of the System</h4>
+            <p>The C.A.R.E. (Campus Health, Medical Assessment, and Record Entry System) is designed solely for routine
+                campus clinic visit logging, symptom self-assessment, triage queue generation, and health summary
+                passes[cite: 1].</p>
+
+            <h4>2. Data Privacy & Local Storage</h4>
+            <p>In compliance with client-side requirements, your submitted personal details (Student ID, Name, Grade,
+                Section, Emergency Contact) and consultation history are processed and stored locally within your
+                browser's local storage[cite: 1]. No sensitive data is transmitted to external third-party servers[cite:
+                1].</p>
+
+            <h4>3. Medical Disclaimer</h4>
+            <p>This platform is intended for basic health assessment and clinic logging on campus[cite: 1]. It does not
+                provide automated emergency medical response or replace professional medical triage during
+                life-threatening severe emergencies[cite: 1].</p>
+
+            <h4>4. User Responsibilities</h4>
+            <p>Students must provide accurate emergency contact details and truthful health information to assist clinic
+                nurses and staff in delivering proper on-campus care[cite: 1].</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="closeTermsModal()">Close</button>
+            <button type="button" class="btn-primary-sm" onclick="acceptTermsFromModal()">I Agree & Accept</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
