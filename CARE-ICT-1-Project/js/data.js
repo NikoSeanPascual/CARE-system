@@ -1,25 +1,28 @@
-(function seedInitialData() {
-    if (!localStorage.getItem('care_users')) {
-        const defaultUsers = [
-            {
-                id: "ADMIN-001",
-                name: "Head Nurse Office",
-                identifier: "admin@school.edu",
-                password: "adminpassword",
-                role: "admin"
-            },
-            {
-                id: "STAFF-001",
-                name: "Clinic Assistant",
-                identifier: "staff@school.edu",
-                password: "staffpassword",
-                role: "staff"
-            }
-        ];
-        localStorage.setItem('care_users', JSON.stringify(defaultUsers));
-    }
+//ito yung userdata
 
-    if (!localStorage.getItem('care_visits')) {
-        localStorage.setItem('care_visits', JSON.stringify([]));
+const userDatabase = [
+    {
+        identifier: '102-48324',
+        password: 'nikosean12345',
+        name: 'Niko Sean Pascual',
+        role: 'student',
+        grade: 'Grade 11',
+        section: 'ICT-1'
+    },
+    {
+        identifier: 'staff01',
+        password: 'staff123',
+        name: 'Nurse Martinez',
+        role: 'staff'
+    },
+    {
+        identifier: 'admin01',
+        password: 'admin123',
+        name: 'Dr. Baculfo',
+        role: 'admin'
     }
-})();
+];
+
+let currentUser = null;
+
+let clinicVisits = [];

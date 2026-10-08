@@ -1,0 +1,168 @@
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #eff6ff;
+    --bg-dark: #0f172a;
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --border: #e2e8f0;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+body {
+    background-color: #0b0f19;
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.bg-orb {
+    position: fixed; border-radius: 50%; filter: blur(100px); z-index: 0; opacity: 0.35; pointer-events: none;
+}
+
+.orb-1 { width: 500px; height: 500px; background: #3v82f6; top: -10%; left: -10%; }
+.orb-2 { width: 400px; height: 400px; background: #06b6d4; bottom: -10%; right: -5%; }
+
+
+.app-header {
+    position: relative; z-index: 10;
+    background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: white; padding: 14px 28px;
+}
+
+.header-container { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.logo-icon { background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; font-weight: 800; }
+.logo-text { font-size: 1.4rem; font-weight: 800; letter-spacing: 1px; }
+.badge { background: rgba(255, 255, 255, 0.1); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; color: #38bdf8l font-weight: 600; }
+.user-profile { display: flex; align-items: center; gap: 16px; }
+.profile-info { display: flex; flex-direction: column; text-align: right; }
+.user-name { font-weight: 600; font-size: 0.9rem; }
+.user-id { font-size: 0.78rem; color: #94a3b8; }
+.btn-logout { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+.btn-logout:hover { background: rgba(239, 68, 68, 0.3);
+}
+
+.dashboard-layout { position: relative; z-index: 5; max-width: 1280px; width: 100%; margin: 24px auto; padding: 0 20px; display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+
+.sidebar { display: flex; flex-direction: column; gap: 20px; }
+.nav-menu { background: rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: none; background: transparent; border-radius: 10px; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.2s; text-align: left; }
+.nav-item:hover { background: var(--primary-light); color: var(--primary); }
+.nav-item.active { background: var(--primary); color: white; }
+
+.active-queue-card { background: rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 18px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); }
+.active-queue-card h4 { font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; letter-spacing: 0.5px; }
+.no-queue { font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+
+.queue-badge-box { background: var(--primary-light); border: 1.5px solid #bfdbfe; padding: 14px; border-radius: 12px; text-align: center; }
+.queue-num { font-size: 1.8rem; font-weight: 800; color: var(--primary-dark); display: block; }
+.queue-status { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: #fef3c7; color: #b45309; margin-top: 6px; }
+
+.content-area { display: flex; flex-direction: column; gap: 20px; }
+.dashboard-section { display: flex; flex-direction: column; gap: 20px; }
+.dashboard-section.hidden { display: none !important; }
+
+.section-title h2 { color: white; font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
+.section-title p { color: #94a3b8; font-size: 0.9rem; }
+
+.card-box { background: rgba(255, 255, 255, 0.95); border-radius: 18px; padding: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); }
+.card-box h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; color: var(--text-main); }
+.card-box .hint { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px; }
+
+.symptom-categories { display: flex; flex-direction: column; gap: 16px; }
+.symptom-group h4 { font-size: 0.85rem; color: var(--primary-dark); text-transform: uppercase; margin-bottom: 8px; font-weight: 700; }
+.checkbox-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.symptom-chip { display: inline-flex; align-items: center; cursor: pointer; }
+.symptom-chip input { display: none; }
+.symptom-chip span { padding: 8px 16px; background: #f1f5f9; border: 1.5px solid var(--border); border-radius: 30px; font-size: 0.85rem; font-weight: 600; color: #475569; transition: all 0.2s; }
+.symptom-chip input:checked + span { background: var(--primary); color: white; border-color: var(--primary-dark); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+
+.mt-20 { margin-top: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 0.85rem; font-weight: 600; color: #334155; }
+textarea { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 0.92rem; outline: none; transition: border-color 0.2s; }
+textarea:focus { border-color: var(--primary); }
+
+.rest-preview-box { margin-top: 16px; padding: 14px 18px; background: #f8fafc; border: 1.5px dashed var(--border); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+.rest-info { font-size: 0.9rem; color: #334155; }
+.rest-info strong { color: var(--primary-dark); font-size: 1.1rem; margin-left: 6px; }
+.severity-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; background: #e2e8f0; color: #475569; }
+
+.btn-submit-visit { width: 100%; margin-top: 20px; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35); transition: transform 0.2s; }
+.btn-submit-visit:hover { transform: translateY(-2px); }
+
+.table-wrapper { overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; }
+.data-table th, .data-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+.data-table th { background: #f8fafc; color: var(--text-muted); font-weight: 700; }
+.status-pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+.status-pill.pending { background: #fef3c7; color: #b45309; }
+.status-pill.cleared { background: #d1e7dd; color: #0f5132; }
+
+.map-card { display: flex; flex-direction: column; gap: 20px; }
+.map-visual { background: #e2e8f0; height: 260px; border-radius: 14px; position: relative; overflow: hidden; border: 2px solid var(--border); }
+.map-landmark { position: absolute; background: white; padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; color: #475569; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.gym { top: 20px; left: 30px; }
+.library { bottom: 30px; left: 50px; }
+.main-bldg { top: 30px; right: 40px; }
+.clinic-pin { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ef4444; color: white; padding: 10px 18px; border-radius: 30px; font-weight: 800; font-size: 0.85rem; box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); animation: pulseMap 2s infinite; }
+
+@keyframes pulseMap { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.06); } }
+
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.pass-card { background: white; width: 100%; max-width: 520px; border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); overflow: hidden; }
+.pass-header { background: var(--bg-dark); color: white; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
+.pass-header h2 { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; color: #38bdf8; }
+.pass-header p { font-size: 0.78rem; color: #94a3b8; }
+.pass-badge { background: var(--primary); padding: 6px 12px; border-radius: 20px; font-weight: 800; font-size: 0.9rem; }
+.pass-body { padding: 24px; display: flex; flex-direction: column; gap: 14px; font-size: 0.9rem; }
+.pass-row { display: flex; justify-content: space-between; }
+.pass-detail strong { display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px; }
+.pass-highlight { background: var(--primary-light); border: 1px solid #bfdbfe; padding: 14px; border-radius: 12px; font-weight: 700; color: var(--primary-dark); display: flex; justify-content: space-between; align-items: center; }
+.modal-footer { padding: 16px 24px; background: #f8fafc; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+.btn-secondary { padding: 8px 16px; background: #e2e8f0; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.btn-primary-sm { padding: 8px 18px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+
+    #passModal, #passModal * {
+        visibility: visible !important;
+    }
+
+    #passModal {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    .pass-card {
+        max-width: 100% !important;
+        box-shadow: none !important;
+        border: 2px solid #000 !important;
+        border-radius: 8px !important;
+        margin: 0 auto !important;
+    }
+
+    .modal-footer {
+        display: none !important;
+    }
+}

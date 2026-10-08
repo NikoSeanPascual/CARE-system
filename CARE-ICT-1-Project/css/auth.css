@@ -31,7 +31,6 @@ body {
     padding: 20px;
 }
 
-/* --- Animated Glowing Background Orbs --- */
 .bg-orb {
     position: absolute;
     border-radius: 50%;
@@ -72,7 +71,6 @@ body {
     100% { transform: translate(40px, 50px) scale(1.1); }
 }
 
-/* --- Split Glassmorphism Wrapper --- */
 .auth-wrapper {
     position: relative;
     z-index: 10;
@@ -89,7 +87,6 @@ body {
     overflow: hidden;
 }
 
-/* --- Left Hero Section --- */
 .brand-side {
     flex: 1;
     background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
@@ -195,7 +192,6 @@ body {
     z-index: 2;
 }
 
-/* --- Right Form Section --- */
 .form-side {
     flex: 1.1;
     padding: 40px 48px;
@@ -210,7 +206,6 @@ body {
     max-width: 400px;
 }
 
-/* Sliding Pill Tab Switcher */
 .tab-container {
     position: relative;
     display: flex;
@@ -249,7 +244,6 @@ body {
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Animated Form Switching */
 .auth-form {
     animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -338,7 +332,6 @@ input:focus, select:focus {
     transform: translateY(0);
 }
 
-/* Alert Boxes */
 .alert-box {
     padding: 10px 14px;
     border-radius: 8px;
@@ -364,9 +357,6 @@ input:focus, select:focus {
     display: none !important;
 }
 
-
-
-/* Custom Terms Checkbox */
 .terms-group {
     margin-top: 12px;
     margin-bottom: 20px;
@@ -402,7 +392,6 @@ input:focus, select:focus {
     text-decoration: underline;
 }
 
-/* Modal Overlay & Card */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0;
@@ -499,9 +488,68 @@ input:focus, select:focus {
     cursor: pointer;
 }
 
-/* Responsive adjustments */
+/*uhh guys di pa masyado gumagana tong renponsive na to*/
 @media (max-width: 820px) {
     .brand-side { display: none; }
     .auth-wrapper { max-width: 440px; min-height: auto; }
     .form-side { padding: 32px 24px; }
+}
+.auth-container {
+    animation: fadeInScale 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.auth-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.form-wrapper {
+    transition: all 0.4s ease-in-out;
+}
+
+.input-group input {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.input-group input:focus {
+    transform: scale(1.01);
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+}
+
+.btn-primary {
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.92) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes shakeError {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+
+.error-message.show {
+    animation: shakeError 0.4s ease-in-out;
 }

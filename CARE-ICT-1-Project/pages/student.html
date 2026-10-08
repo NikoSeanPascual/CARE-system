@@ -2,9 +2,277 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARE - Student Portal</title>
+    <link rel="stylesheet" href="../css/student.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
 </head>
 <body>
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
 
+<!-- Navigation Header -->
+<header class="app-header">
+    ;
+    <div class="header-container">
+        <div class="brand">
+            <span class="logo-icon">✚</span>
+            <span class="logo-text">C.A.R.E.</span>
+            <span class="badge">Student Portal</span>
+        </div>
+        <div class="user-profile">
+            <div class="profile-info">
+                <span id="navStudentName" class="user-name">Loading...</span>
+                <span id="navStudentID" class="user-id">---</span>
+            </div>
+            <button class="btn-logout" onclick="handleLogout()">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                <span>Logout</span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="dashboard-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <nav class="nav-menu">
+            <button class="nav-item active" onclick="switchSection('new-visit', this)">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                <span>Log Clinic Visit</span>
+            </button>
+            <button class="nav-item" onclick="switchSection('my-history', this)">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span>Visit History</span>
+            </button>
+            <button class="nav-item" onclick="switchSection('clinic-map', this)">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                    <line x1="8" y1="2" x2="8" y2="18"/>
+                    <line x1="16" y1="6" x2="16" y2="22"/>
+                </svg>
+                <span>Clinic Location</span>
+            </button>
+        </nav>
+
+        <div class="active-queue-card">
+            <h4>Active Triage Status</h4>
+            <div id="queueStatusContent">
+                <p class="no-queue">No active clinic visit today.</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <section class="content-area">
+
+        <!-- SECTION 1: LOG VISIT FORM -->
+        <div id="sec-new-visit" class="dashboard-section active">
+            <div class="section-title">
+                <h2>Campus Health Check-in</h2>
+                <p>Select your current symptoms to calculate recommended clinic rest time and generate a queue slip.</p>
+            </div>
+
+            <form id="visitForm" onsubmit="handleVisitSubmit(event)">
+                <!-- Symptom Selector Grid -->
+                <div class="card-box">
+                    <h3>1. Symptom & Health Concern Selector</h3>
+                    <p class="hint">Check all symptoms that apply to you today:</p>
+
+                    <div class="symptom-categories">
+                        <div class="symptom-group">
+                            <h4>General / Pain</h4>
+                            <div class="checkbox-grid">
+                                <label class="symptom-chip"><input type="checkbox" name="symptoms" value="Headache"
+                                                                   data-rest="30" data-severity="low">
+                                    <span>Headache</span></label>
+                                <label class="symptom-chip"><input type="checkbox" name="symptoms"
+                                                                   value="Fever / Chills" data-rest="60"
+                                                                   data-severity="high">
+                                    <span>Fever / Chills</span></label>
+                                <label class="symptom-chip"><input type="checkbox" name="symptoms" value="Dizziness"
+                                                                   data-rest="45" data-severity="medium"> <span>Dizziness</span></label>
+                                <label class="symptom-chip"><input type="checkbox" name="symptoms"
+                                                                   value="Muscle / Body Pain" data-rest="30"
+                                                                   data-severity="low"> <span>Body Aches</span></label>
+                            </div>
+                        </div>
+
+                        <div class="symptom-group">
+                            <h4>Respiratory / Cold</h4>
+                            <div class="checkbox-grid">
+                                <label class="symptom-chip"><input type="checkbox" name="symptoms"
+                                                                   value="Cough / Sore Throat" data-rest="30"
+                                                                   data-severity="low"> <span>Cough / Sore Throat</span></label>
+                                <label class="symptom-chip"><input type="checkbox" name="symptoms"
+                                                                   value="Nasal Congestion" data-rest="20"
+                                                                   data-severity="low"> <span>Runny Nose</span></label>
+                                <label class="symptom-chip"><input type="checkbox" name="symptoms"
+                                                                   value="Difficulty Breathing" data-rest="90"
+                                                                   data-severity="high">
+                                    <span>Shortness of Breath</span></label>
+                            </div>
+                        </div>
+
+                        <div class="symptom-group">
+                            <h4>Gastrointestinal & Basic Request</h4>
+                            <div class="checkbox-grid">
+                                <label class="symptom-chip"><input type="checkbox" name="symptoms"
+                                                                   value="Stomachache / Nausea" data-rest="45"
+                                                                   data-severity="medium">
+                                    <span>Stomachache</span></label>
+                                <label class="symptom-chip"><input type="checkbox" name="symptoms" value="Dysmenorrhea"
+                                                                   data-rest="60" data-severity="medium"> <span>Dysmenorrhea</span></label>
+                                <label class="symptom-chip"><input type="checkbox" name="symptoms"
+                                                                   value="Minor Wounds / Bandage Request" data-rest="15"
+                                                                   data-severity="low"> <span>First Aid / Wounds</span></label>
+                                <label class="symptom-chip"><input type="checkbox" name="symptoms"
+                                                                   value="Basic OTC Medicine Request" data-rest="10"
+                                                                   data-severity="low">
+                                    <span>Medicine Request</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Details -->
+                <div class="card-box mt-20">
+                    <h3>2. Chief Complaint & Details</h3>
+                    <div class="form-group">
+                        <label for="chiefComplaint">Describe your symptoms or condition:</label>
+                        <textarea id="chiefComplaint" rows="3"
+                                  placeholder="e.g. Started having mild fever and dizziness around 2nd period."
+                                  required></textarea>
+                    </div>
+
+                    <!-- Real-time Calculated Rest Time Preview -->
+                    <div class="rest-preview-box">
+                        <div class="rest-info">
+                            <span>Estimated Rest Pass Duration:</span>
+                            <strong id="calculatedRestDisplay">0 Minutes</strong>
+                        </div>
+                        <span class="severity-badge" id="severityDisplay">Low Severity</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit-visit">
+                    <span>Submit Check-in & Get Queue Slip</span>
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+
+        <!-- SECTION 2: MEDICAL HISTORY -->
+        <div id="sec-my-history" class="dashboard-section hidden">
+            <div class="section-title">
+                <h2>Personal Health Consultation History</h2>
+                <p>Review past clinic visits, issued treatments, and health summary slips.</p>
+            </div>
+            <div class="card-box">
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Queue #</th>
+                            <th>Symptoms Logged</th>
+                            <th>Rest Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                        <!-- Dynamically populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: CLINIC MAP -->
+        <div id="sec-clinic-map" class="dashboard-section hidden">
+            <div class="section-title">
+                <h2>Campus Clinic Location Map</h2>
+                <p>Locate the physical clinic building and available facilities on campus.</p>
+            </div>
+            <div class="card-box map-card">
+                <div class="map-visual">
+                    <div class="map-pin clinic-pin">
+                        <span class="pin-icon">🏥</span>
+                        <span class="pin-label">Main Campus Clinic (Building B - Rm 102)</span>
+                    </div>
+                    <div class="map-landmark gym">Gymnasium</div>
+                    <div class="map-landmark library">Library</div>
+                    <div class="map-landmark main-bldg">Main Academic Building</div>
+                </div>
+                <div class="map-details">
+                    <h4>Clinic Operating Hours</h4>
+                    <p>🗓️ Monday – Friday: 7:30 AM – 5:30 PM</p>
+                    <p>📞 Emergency Internal Extension: Ext. 104 / 105</p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<!-- PRINTABLE DIGITAL HEALTH PASS MODAL -->
+<div id="passModal" class="modal-overlay hidden" style="display: none;">
+    <div class="modal-card pass-card">
+        <div class="pass-header">
+            <div>
+                <h2>CAMPUS CLINIC HEALTH PASS</h2>
+                <p>Digital Visit Slip & Consultation Summary</p>
+            </div>
+            <span class="pass-badge" id="modalQueueNo">#Q-000</span>
+        </div>
+
+        <div class="pass-body" id="printablePassArea">
+            <div class="pass-row">
+                <div><strong>Student Name:</strong> <span id="modalStudentName">---</span></div>
+                <div><strong>ID Number:</strong> <span id="modalStudentID">---</span></div>
+            </div>
+            <div class="pass-row">
+                <div><strong>Grade & Section:</strong> <span id="modalStudentGrade">---</span></div>
+                <div><strong>Date & Time:</strong> <span id="modalVisitTime">---</span></div>
+            </div>
+            <hr>
+            <div class="pass-detail">
+                <strong>Logged Symptoms:</strong>
+                <p id="modalSymptoms">None selected</p>
+            </div>
+            <div class="pass-detail">
+                <strong>Chief Complaint:</strong>
+                <p id="modalComplaint">N/A</p>
+            </div>
+            <div class="pass-highlight">
+                <div>Recommended Rest Duration: <strong id="modalRestDuration">0 Mins</strong></div>
+                <div>Triage Status: <span id="modalStatus" class="status-pill">Pending Triage</span></div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" id="closePassModalBtn" onclick="closePassModal()">Close</button>
+            <button type="button" class="btn-primary-sm" onclick="window.print()">🖨️ Print Health Slip</button>
+        </div>
+    </div>
+</div>
+
+<script src="../js/data.js"></script>
+<script src="../js/student.js"></script>
 </body>
 </html>

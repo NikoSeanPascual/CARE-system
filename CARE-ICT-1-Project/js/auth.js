@@ -12,85 +12,143 @@ function switchTab(tab) {
         signupForm.classList.add('hidden');
         toggleLoginBtn.classList.add('active');
         toggleSignupBtn.classList.remove('active');
-        glider.style.transform = 'translateX(0%)';
+        if (glider) glider.style.transform = 'translateX(0%)';
     } else {
         signupForm.classList.remove('hidden');
         loginForm.classList.add('hidden');
         toggleSignupBtn.classList.add('active');
         toggleLoginBtn.classList.remove('active');
-        glider.style.transform = 'translateX(100%)';
+        if (glider) glider.style.transform = 'translateX(100%)';
     }
 }
 
 // nagdidiisplay ng alert messages
 function showAlert(message, type = 'error') {
     const alertBox = document.getElementById('alertBox');
-    alertBox.textContent = message;
-    alertBox.className = `alert-box ${type}`;
+    if (alertBox) {
+        alertBox.textContent = message;
+        alertBox.className = `alert-box ${type}`;
+    }
 }
 
 function hideAlert() {
     const alertBox = document.getElementById('alertBox');
-    alertBox.className = 'alert-box hidden';
+    if (alertBox) {
+        alertBox.className = 'alert-box hidden';
+    }
 }
 
-// ito yung naghahandle ng Student Registration
+function openTermsModal(event) {
+    if (event) event.preventDefault();
+    const modal = document.getElementById('termsModal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeTermsModal() {
+    const modal = document.getElementById('termsModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function closeTermsModalOnOverlay(event) {
+    if (event.target.id === 'termsModal') {
+        closeTermsModal();
+    }
+}
+
+function acceptTermsFromModal() {
+    const termsCheck = document.getElementById('signupTerms');
+    if (termsCheck) termsCheck.checked = true;
+    closeTermsModal();
+}
+
 function handleSignup(event) {
     event.preventDefault();
 
-    const fullName = document.getElementById('signupFullName').value.trim();
-    const studentID = document.getElementById('signupStudentID').value.trim();
-    const grade = document.getElementById('signupGrade').value;
-    const section = document.getElementById('signupSection').value.trim();
-    const contact = document.getElementById('signupContact').value.trim();
-    const password = document.getElementById('signupPassword').value;
+    const fullNameInput = document.getElementById('signupFullName').value.trim();
+    const studentIDInput = document.getElementById('signupStudentID').value.trim();
+    const gradeInput = document.getElementById('signupGrade').value;
+    const sectionInput = document.getElementById('signupSection').value.trim();
+    const contactInput = document.getElementById('signupContact').value.trim();
+    const passwordInput = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('signupConfirmPassword').value;
+    const termsCheck = document.getElementById('signupTerms').checked;
+    const alertBox = document.getElementById('alertBox');
 
-    // Password Match Check
-    if (password !== confirmPassword) {
-        showAlert('Passwords do not match.', 'error');
+    function showAlert(message, type) {
+        if (!alertBox) return;
+        alertBox.innerText = message;
+        alertBox.className = `alert-box ${type}`;
+        alertBox.classList.remove('hidden');
+    }
+
+    // ito yung nagchecheck na lahat ay hindi empty
+    if (!fullNameInput || !studentIDInput || !gradeInput || !sectionInput || !contactInput || !passwordInput || !confirmPassword) {
+        showAlert("Please fill out all required fields!", "error");
         return;
     }
 
-    // Phone Number Validation
-    const phoneRegex = /^[0-9]{11}$/;
-    if (!phoneRegex.test(contact)) {
-        showAlert('Please enter a valid 11-digit phone number.', 'error');
+    // nag checheck na bawal ang numbers sa Full Name
+    const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    let nameHasNumber = false;
+
+    for (let char of fullNameInput) {
+        if (numbers.includes(char)) {
+            nameHasNumber = true;
+            break;
+        }
+    }
+
+    if (nameHasNumber) {
+        showAlert("Full Name cannot contain numbers!", "error");
         return;
     }
 
-    const users = JSON.parse(localStorage.getItem('care_users')) || [];
+    // ito ang nagchecheck na meron dapat ng first and last name
+    const nameWords = fullNameInput.split(' ').filter(word => word.length > 0);
 
-    // ito yung nagchecheck if my Duplicate
-    const existingUser = users.find(u => u.identifier.toLowerCase() === studentID.toLowerCase());
-    if (existingUser) {
-        showAlert('An account with this Student ID already exists.', 'error');
+    if (nameWords.length < 2) {
+        showAlert("Please enter both your First Name and Last Name!", "error");
         return;
     }
 
-    const newUser = {
-        id: `STU-${Date.now()}`,
-        name: fullName,
-        identifier: studentID,
-        grade: grade,
-        section: section,
-        contact: contact,
-        password: password,
-        role: 'student'
-    };
+    // nag checheck na dapat may - or letters ang student ID
+    let studentIDHasLetter = false;
+    const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-    users.push(newUser);
-    localStorage.setItem('care_users', JSON.stringify(users));
+    for (let char of studentIDInput) {
+        if (alphabet.includes(char)) {
+            studentIDHasLetter = true;
+            break;
+        }
+    }
 
-    showAlert('Registration successful! You can now login.', 'success');
-    document.getElementById('signupForm').reset();
+    if (!studentIDHasLetter) {
+        showAlert("Student ID cannot be numbers only! Please include letters or hyphens (e.g. 2024-12345 or STU-123).", "error");
+        return;
+    }
+
+    // nagchecheck na nagmatch yung password
+    if (passwordInput !== confirmPassword) {
+        showAlert("Passwords do not match!", "error");
+        return;
+    }
+
+    // yung checker na dapat inaccept sa terms and condition
+    if (!termsCheck) {
+        showAlert("You must agree to the Terms & Conditions to register.", "error");
+        return;
+    }
+
+    // pag naaccept na ang and registration
+    showAlert("Account registered successfully! Redirecting...", "success");
 
     setTimeout(() => {
-        switchTab('login');
+        if (typeof switchTab === 'function') {
+            switchTab('login');
+        }
     }, 1500);
 }
 
-// ito yung naghahandle ng Login Authentication at Routing
 function handleLogin(event) {
     event.preventDefault();
 
@@ -98,10 +156,8 @@ function handleLogin(event) {
     const identifier = document.getElementById('loginIdentifier').value.trim();
     const password = document.getElementById('loginPassword').value;
 
-    const users = JSON.parse(localStorage.getItem('care_users')) || [];
-
-    // Authentication ng mga credentials and role
-    const user = users.find(u =>
+    // dito nagsesearch kung yung account ay nasa existing
+    const user = userDatabase.find(u =>
         u.identifier.toLowerCase() === identifier.toLowerCase() &&
         u.password === password &&
         u.role === role
@@ -112,21 +168,10 @@ function handleLogin(event) {
         return;
     }
 
-    // Guys dito ilalagay yung pinaka active session user details
-    const sessionUser = {
-        id: user.id,
-        name: user.name,
-        identifier: user.identifier,
-        role: user.role,
-        grade: user.grade || '',
-        section: user.section || ''
-    };
-
-    localStorage.setItem('care_session', JSON.stringify(sessionUser));
+    currentUser = user;
 
     showAlert('Login successful! Redirecting...', 'success');
 
-    // ito yung Route based ng user role
     setTimeout(() => {
         switch (role) {
             case 'admin':
@@ -142,84 +187,11 @@ function handleLogin(event) {
         }
     }, 1000);
 }
-// --- Modal Handlers ---
-function openTermsModal(event) {
-    if (event) event.preventDefault();
-    document.getElementById('termsModal').classList.remove('hidden');
-}
 
-function closeTermsModal() {
-    document.getElementById('termsModal').classList.add('hidden');
-}
-
-function closeTermsModalOnOverlay(event) {
-    if (event.target.id === 'termsModal') {
-        closeTermsModal();
-    }
-}
-
-function acceptTermsFromModal() {
-    document.getElementById('signupTerms').checked = true;
-    closeTermsModal();
-}
-
-// --- Updated handleSignup with Checkbox Verification ---
-function handleSignup(event) {
-    event.preventDefault();
-
-    const fullName = document.getElementById('signupFullName').value.trim();
-    const studentID = document.getElementById('signupStudentID').value.trim();
-    const grade = document.getElementById('signupGrade').value;
-    const section = document.getElementById('signupSection').value.trim();
-    const contact = document.getElementById('signupContact').value.trim();
-    const password = document.getElementById('signupPassword').value;
-    const confirmPassword = document.getElementById('signupConfirmPassword').value;
-    const termsAccepted = document.getElementById('signupTerms').checked;
-
-    // Check Terms Agreement
-    if (!termsAccepted) {
-        showAlert('You must agree to the Terms & Conditions to register.', 'error');
-        return;
-    }
-
-    if (password !== confirmPassword) {
-        showAlert('Passwords do not match.', 'error');
-        return;
-    }
-
-    const phoneRegex = /^[0-9]{11}$/;
-    if (!phoneRegex.test(contact)) {
-        showAlert('Please enter a valid 11-digit phone number.', 'error');
-        return;
-    }
-
-    const users = JSON.parse(localStorage.getItem('care_users')) || [];
-
-    const existingUser = users.find(u => u.identifier.toLowerCase() === studentID.toLowerCase());
-    if (existingUser) {
-        showAlert('An account with this Student ID already exists.', 'error');
-        return;
-    }
-
-    const newUser = {
-        id: `STU-${Date.now()}`,
-        name: fullName,
-        identifier: studentID,
-        grade: grade,
-        section: section,
-        contact: contact,
-        password: password,
-        role: 'student',
-        agreedToTermsAt: new Date().toISOString()
-    };
-
-    users.push(newUser);
-    localStorage.setItem('care_users', JSON.stringify(users));
-
-    showAlert('Registration successful! You can now login.', 'success');
-    document.getElementById('signupForm').reset();
-
-    setTimeout(() => {
-        switchTab('login');
-    }, 1500);
-}
+window.switchTab = switchTab;
+window.handleSignup = handleSignup;
+window.handleLogin = handleLogin;
+window.openTermsModal = openTermsModal;
+window.closeTermsModal = closeTermsModal;
+window.closeTermsModalOnOverlay = closeTermsModalOnOverlay;
+window.acceptTermsFromModal = acceptTermsFromModal;

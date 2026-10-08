@@ -46,7 +46,7 @@
         </div>
 
         <div class="brand-footer">
-            <p>© 2026 CARE Health System • Built for Campus Care</p>
+            <p>© 2026 CARE Health System • Built for Campus Care by Group 7</p>
         </div>
     </section>
 
@@ -99,7 +99,7 @@
                 </button>
             </form>
 
-            <form id="signupForm" class="auth-form hidden" onsubmit="handleSignup(event)">
+            <form id="signupForm" class="auth-form hidden" onsubmit="handleSignup(event)" novalidate>
                 <div class="form-header">
                     <h2>Create Student Account</h2>
                     <p>Register once to simplify all future campus clinic visits.</p>
@@ -107,18 +107,18 @@
 
                 <div class="input-field">
                     <label for="signupFullName">Full Name</label>
-                    <input type="text" id="signupFullName" placeholder="e.g. Juan Dela Cruz" required>
+                    <input type="text" id="signupFullName" placeholder="Type your name here">
                 </div>
 
                 <div class="input-field">
                     <label for="signupStudentID">Student ID Number</label>
-                    <input type="text" id="signupStudentID" placeholder="e.g. 2024-12345" required>
+                    <input type="text" id="signupStudentID" placeholder="e.g. 2024-12345">
                 </div>
 
                 <div class="grid-2">
                     <div class="input-field">
                         <label for="signupGrade">Year / Level</label>
-                        <select id="signupGrade" required>
+                        <select id="signupGrade">
                             <option value="">Select Level</option>
                             <option value="Grade 11">Grade 11</option>
                             <option value="Grade 12">Grade 12</option>
@@ -130,34 +130,34 @@
                     </div>
                     <div class="input-field">
                         <label for="signupSection">Section</label>
-                        <input type="text" id="signupSection" placeholder="e.g. BSIT 2-A" required>
+                        <input type="text" id="signupSection" placeholder="e.g. ICT-1">
                     </div>
                 </div>
 
                 <div class="input-field">
                     <label for="signupContact">Emergency Contact</label>
-                    <input type="tel" id="signupContact" placeholder="09123456789" required>
+                    <input type="tel" id="signupContact" placeholder="e.g 09123456789">
                 </div>
 
                 <div class="grid-2">
                     <div class="input-field">
                         <label for="signupPassword">Password</label>
-                        <input type="password" id="signupPassword" placeholder="••••••••" required minlength="6">
+                        <input type="password" id="signupPassword" placeholder="••••••••">
                     </div>
                     <div class="input-field">
                         <label for="signupConfirmPassword">Confirm Password</label>
-                        <input type="password" id="signupConfirmPassword" placeholder="••••••••" required>
+                        <input type="password" id="signupConfirmPassword" placeholder="••••••••">
                     </div>
                 </div>
 
                 <div class="form-group terms-group">
                     <label class="checkbox-container">
-                        <input type="checkbox" id="signupTerms" required>
+                        <input type="checkbox" id="signupTerms">
                         <span class="checkmark"></span>
                         <span class="terms-text">
-                            I agree to the <a href="#" onclick="openTermsModal(event)">Terms & Conditions</a> and <a
-                                href="#" onclick="openTermsModal(event)">Data Privacy Notice</a>.
-                        </span>
+                I agree to the <a href="#" onclick="openTermsModal(event)">Terms & Conditions</a> and <a href="#"
+                                                                                                         onclick="openTermsModal(event)">Data Privacy Notice</a>.
+            </span>
                     </label>
                 </div>
 
@@ -180,25 +180,27 @@
             <button type="button" class="modal-close-btn" onclick="closeTermsModal()">&times;</button>
         </div>
         <div class="modal-body">
-            <h4>1. Purpose of the System</h4>
-            <p>The C.A.R.E. (Campus Health, Medical Assessment, and Record Entry System) is designed solely for routine
-                campus clinic visit logging, symptom self-assessment, triage queue generation, and health summary
-                passes[cite: 1].</p>
+            <h4>1. Data Processing and In-Memory Handling</h4>
+            <p>Welcome to CARE: Campus Health, Medical Assessment, and Record Entry System. Please note that this system
+                operates entirely using in-memory JavaScript data structures during active runtime session interaction.
+            </p>
 
-            <h4>2. Data Privacy & Local Storage</h4>
-            <p>In compliance with client-side requirements, your submitted personal details (Student ID, Name, Grade,
-                Section, Emergency Contact) and consultation history are processed and stored locally within your
-                browser's local storage[cite: 1]. No sensitive data is transmitted to external third-party servers[cite:
-                1].</p>
+            <h4>2. No Persistent Web Storage</h4>
+            <p>To comply with course guidelines and browser security standards, no personal health data, login
+                credentials, or clinic records are stored permanently in browser localStorage or local persistent device
+                storage.</p>
 
-            <h4>3. Medical Disclaimer</h4>
-            <p>This platform is intended for basic health assessment and clinic logging on campus[cite: 1]. It does not
-                provide automated emergency medical response or replace professional medical triage during
-                life-threatening severe emergencies[cite: 1].</p>
-
-            <h4>4. User Responsibilities</h4>
+            <h4>3. Session Lifecycle</h4>
+            <p>All entered student information, clinic check-in logs, queue numbers, and generated medical passes are
+                stored temporarily for active session rendering. Closing or refreshing the browser page will instantly
+                reset active queue entries and session data.</p>
+            <h4>4. Scope of Use</h4>
+            <p>The system is designed strictly for routine student health check-ins, symptom selections, and basic
+                clinic visit summary generation within campus limits. It does not replace emergency medical response
+                systems.</p>
+            <h4>5. User Responsibilities</h4>
             <p>Students must provide accurate emergency contact details and truthful health information to assist clinic
-                nurses and staff in delivering proper on-campus care[cite: 1].</p>
+                nurses and staff in delivering proper on-campus care.</p>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn-secondary" onclick="closeTermsModal()">Close</button>
