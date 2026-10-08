@@ -1,2 +1,3 @@
 CURRENTLY FINISHED:
 1. VALIDATION(Login and Signup) - ✅
+2. DASHBOARD - ✅
