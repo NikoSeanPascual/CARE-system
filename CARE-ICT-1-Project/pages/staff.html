@@ -2,9 +2,185 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C.A.R.E - Staff Portal</title>
+    <link rel="stylesheet" href="../css/student.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+    <style>
+        /* Guaranteed modal styling and clickability */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .modal-overlay.hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
+<div class="dashboard-wrapper" style="background: #0f172a; min-height: 100vh; display: flex;">
+    <aside class="sidebar"
+           style="width: 260px; background: white; padding: 20px; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+            <div class="brand" style="margin-bottom: 30px;">
+                <span class="brand-badge"
+                      style="background: #2563eb; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">Clinic Staff</span>
+                <h2 style="font-size: 1.5rem; color: #0f172a; margin-top: 5px;">C.A.R.E</h2>
+                <p style="font-size: 0.8rem; color: #64748b;">Clinic Assistant Portal</p>
+            </div>
 
+            <nav class="nav-menu" style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="nav-item active" onclick="switchStaffSection('queue', this)"
+                        style="display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 14px; background: #eff6ff; color: #2563eb; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-align: left;">
+                    <span>📋 Live Patient Queue</span>
+                </button>
+                <button class="nav-item" onclick="switchStaffSection('inventory', this)"
+                        style="display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 14px; background: transparent; color: #64748b; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-align: left;">
+                    <span>💊 Supply Inventory</span>
+                </button>
+            </nav>
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="btn-secondary"
+                    style="width: 100%; padding: 10px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; font-weight: 600;"
+                    onclick="handleLogout()">Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content" style="flex: 1; padding: 30px; overflow-y: auto; background: #f8fafc;">
+        <header class="top-bar"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: white; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div class="header-title">
+                <h1 style="font-size: 1.4rem; color: #0f172a; margin-bottom: 4px;">Clinic Operations & Triage</h1>
+                <p style="font-size: 0.85rem; color: #64748b;">Manage student check-ins, approve rest passes, and record
+                    dispensed supplies.</p>
+            </div>
+            <div class="user-profile" style="text-align: right;">
+                <strong id="navStaffName" style="color: #0f172a; display: block;">Staff Assistant</strong>
+                <span id="navRoleTag" style="font-size: 0.75rem; color: #64748b;">Clinic Staff</span>
+            </div>
+        </header>
+
+        <!-- SECTION 1: LIVE QUEUE MANAGEMENT -->
+        <section id="sec-queue" class="dashboard-section">
+            <div class="metrics-grid"
+                 style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+                <div class="metric-card"
+                     style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Pending Triage</span>
+                    <h2 id="metricPending" style="font-size: 2rem; margin-top: 5px; color: #2563eb;">0</h2>
+                </div>
+                <div class="metric-card"
+                     style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">In Clinic Rest</span>
+                    <h2 id="metricResting" style="font-size: 2rem; margin-top: 5px; color: #d97706;">0</h2>
+                </div>
+                <div class="metric-card"
+                     style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Cleared Today</span>
+                    <h2 id="metricCleared" style="font-size: 2rem; margin-top: 5px; color: #16a34a;">0</h2>
+                </div>
+            </div>
+
+            <div class="card" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <h3 style="color: #0f172a; margin-bottom: 10px;">Active Student Queue</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left;">
+                    <thead>
+                    <tr style="border-bottom: 2px solid #e2e8f0; font-size: 0.85rem; color: #64748b;">
+                        <th style="padding: 12px;">Queue #</th>
+                        <th style="padding: 12px;">Student Name</th>
+                        <th style="padding: 12px;">Symptoms</th>
+                        <th style="padding: 12px;">Rest Pass</th>
+                        <th style="padding: 12px;">Status</th>
+                        <th style="padding: 12px;">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="staffQueueTableBody">
+                    <!-- Populated dynamically by staff.js -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 2: BASIC MEDICINE INVENTORY -->
+        <section id="sec-inventory" class="dashboard-section hidden">
+            <div class="card" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <h3 style="color: #0f172a; margin-bottom: 5px;">Basic Clinic Medicine Supply Stocks</h3>
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Monitor basic supply stock levels
+                    for student distribution.</p>
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                    <tr style="border-bottom: 2px solid #e2e8f0; font-size: 0.85rem; color: #64748b;">
+                        <th style="padding: 12px;">Item Name</th>
+                        <th style="padding: 12px;">Category</th>
+                        <th style="padding: 12px;">Stock Remaining</th>
+                        <th style="padding: 12px;">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id="staffInventoryTableBody">
+                    <!-- Populated dynamically by staff.js -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- UPDATE VISIT MODAL -->
+<div id="actionModal" class="modal-overlay hidden">
+    <div class="modal-card"
+         style="background: white; width: 420px; padding: 25px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        <h3 style="color: #0f172a; margin-bottom: 5px;">Update Patient Visit</h3>
+        <p id="actionModalQueue" style="font-size: 0.9rem; font-weight: bold; color: #2563eb; margin-bottom: 15px;"></p>
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-size: 0.85rem; font-weight: 600; color: #334155; display: block; margin-bottom: 6px;">Update
+                Status</label>
+            <select id="actionStatusSelect"
+                    style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.9rem;">
+                <option value="Approved for Rest">Approve for Rest Pass</option>
+                <option value="Cleared & Discharged">Cleared & Discharged</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-size: 0.85rem; font-weight: 600; color: #334155; display: block; margin-bottom: 6px;">Dispense
+                Medicine Supply</label>
+            <select id="actionMedSelect"
+                    style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.9rem;">
+                <option value="">None Issued</option>
+                <option value="Paracetamol">Paracetamol (500mg)</option>
+                <option value="Antacid">Antacid Tablet</option>
+                <option value="Mefenamic Acid">Mefenamic Acid</option>
+                <option value="Bandage / Dressing">Bandage / Dressing</option>
+            </select>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <button type="button" class="btn-secondary" onclick="closeActionModal()"
+                    style="padding: 10px 16px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600; cursor: pointer; color: #334155;">
+                Cancel
+            </button>
+            <button type="button" class="btn-primary" onclick="saveVisitAction()"
+                    style="background: #2563eb; color: white; padding: 10px 18px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                Save Changes
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="../js/data.js"></script>
+<script src="../js/staff.js"></script>
 </body>
 </html>

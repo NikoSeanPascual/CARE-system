@@ -1,43 +1,189 @@
-document.addEventListener('DOMContentLoaded', () => {
-    initSession();
-    setupModalListeners();
+document.addEventListener('change', function(event) {
+    if (event.target.name === 'symptoms') {
+        updateRestPreview();
+    }
 });
 
-function initSession() {
-    if (typeof userDatabase !== 'undefined' && Array.isArray(userDatabase)) {
-        currentUser = userDatabase.find(u => u.role === 'student') || userDatabase[0];
-    } else {
-        currentUser = { name: 'Niko Sean Pascual', identifier: '102-48324', grade: 'Grade 11', section: 'ICT-1' };
-    }
+function updateRestPreview() {
+    const checkboxes = document.querySelectorAll('input[name="symptoms"]:checked');
+    let maxRest = 0;
+    let maxSeverity = 'Low';
+    let severityRank = { 'low': 1, 'medium': 2, 'high': 3 };
 
-    const nameEl = document.getElementById('navStudentName');
-    const idEl = document.getElementById('navStudentID');
+    checkboxes.forEach(cb => {
+        const rest = parseInt(cb.getAttribute('data-rest')) || 0;
+        const severity = cb.getAttribute('data-severity') || 'low';
 
-    if (nameEl) nameEl.textContent = currentUser.name || 'Student';
-    if (idEl) idEl.textContent = currentUser.identifier || '---';
+        // Take the maximum rest time instead of adding them all up
+        if (rest > maxRest) {
+            maxRest = rest;
+        }
 
-    document.querySelectorAll('input[name="symptoms"]').forEach(checkbox => {
-        checkbox.addEventListener('change', calculateRestTime);
+        if (severityRank[severity] > severityRank[maxSeverity.toLowerCase()]) {
+            maxSeverity = severity.charAt(0).toUpperCase() + severity.slice(1);
+        }
     });
 
-    renderActiveQueueStatus();
-    renderVisitHistory();
-}
-
-function setupModalListeners() {
-    const closeBtn = document.getElementById('closePassModalBtn');
-    const modal = document.getElementById('passModal');
-
-    if (closeBtn) {
-        closeBtn.onclick = closePassModal;
+    if (checkboxes.length === 0) {
+        maxRest = 0;
+        maxSeverity = 'Low';
     }
 
+    const restDisplay = document.getElementById('calculatedRestDisplay');
+    const severityDisplay = document.getElementById('severityDisplay');
+
+    if (restDisplay) restDisplay.textContent = maxRest + ' Minutes';
+    if (severityDisplay) {
+        severityDisplay.textContent = maxSeverity + ' Severity';
+        severityDisplay.className = `severity-badge ${maxSeverity.toLowerCase()}`;
+    }
+}
+
+// Handle Visit Form Submission & Queue Generation
+function handleVisitSubmit(event) {
+    event.preventDefault();
+
+    const checkboxes = document.querySelectorAll('input[name="symptoms"]:checked');
+    if (checkboxes.length === 0) {
+        alert("Please select at least one symptom.");
+        return;
+    }
+
+    const complaint = document.getElementById('chiefComplaint').value.trim();
+    if (!complaint) {
+        alert("Please describe your chief complaint or symptoms.");
+        return;
+    }
+
+    let maxRest = 0;
+    let maxSeverity = 'Low';
+    let symptomList = [];
+    let severityRank = { 'low': 1, 'medium': 2, 'high': 3 };
+
+    checkboxes.forEach(cb => {
+        const rest = parseInt(cb.getAttribute('data-rest')) || 0;
+        if (rest > maxRest) {
+            maxRest = rest;
+        }
+
+        const sev = cb.getAttribute('data-severity') || 'low';
+        if (severityRank[sev] > severityRank[maxSeverity.toLowerCase()]) {
+            maxSeverity = sev.charAt(0).toUpperCase() + sev.slice(1);
+        }
+        symptomList.push(cb.value);
+    });
+
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || {
+        name: "Student Patient",
+        identifier: "2024-0000",
+        grade: "Grade 11",
+        section: "ICT-1"
+    };
+
+    const queueNo = "#Q-" + Math.floor(100 + Math.random() * 900);
+    const visitTime = new Date().toLocaleString();
+
+    // Populate Modal fields
+    document.getElementById('modalQueueNo').textContent = queueNo;
+    document.getElementById('modalStudentName').textContent = currentUser.name;
+    document.getElementById('modalStudentID').textContent = currentUser.identifier;
+    document.getElementById('modalStudentGrade').textContent = (currentUser.grade || '') + ' ' + (currentUser.section || '');
+    document.getElementById('modalVisitTime').textContent = visitTime;
+    document.getElementById('modalSymptoms').textContent = symptomList.join(', ');
+    document.getElementById('modalComplaint').textContent = complaint;
+    document.getElementById('modalRestDuration').textContent = maxRest + ' Mins';
+
+    const statusEl = document.getElementById('modalStatus');
+    statusEl.textContent = 'Pending Triage (' + maxSeverity + ')';
+    statusEl.className = 'status-pill pending';
+
+    // Save active visit for sidebar
+    const activeVisit = {
+        queueNo: queueNo,
+        symptoms: symptomList.join(', '),
+        rest: maxRest + ' Mins',
+        status: 'Pending Triage',
+        time: visitTime,
+        complaint: complaint,
+        severity: maxSeverity
+    };
+    sessionStorage.setItem('activeVisit', JSON.stringify(activeVisit));
+
+    // Save to Visit History array in sessionStorage
+    let visitHistory = JSON.parse(sessionStorage.getItem('visitHistory')) || [];
+    visitHistory.unshift(activeVisit); // Add new visit to the top
+    sessionStorage.setItem('visitHistory', JSON.stringify(visitHistory));
+
+    updateActiveQueueDisplay(activeVisit);
+    loadVisitHistory(); // Refresh history table data
+
+    const modal = document.getElementById('passModal');
     if (modal) {
-        modal.onclick = (e) => {
-            if (e.target === modal) {
-                closePassModal();
-            }
-        };
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+    }
+}
+
+function loadVisitHistory() {
+    const tbody = document.getElementById('historyTableBody');
+    if (!tbody) return;
+
+    const visitHistory = JSON.parse(sessionStorage.getItem('visitHistory')) || [];
+
+    if (visitHistory.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 20px;">No past clinic visits recorded yet.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = visitHistory.map(v => `
+        <tr>
+            <td>${v.time}</td>
+            <td><strong>${v.queueNo}</strong></td>
+            <td>${v.symptoms}</td>
+            <td>${v.rest}</td>
+            <td><span class="status-pill pending">${v.status}</span></td>
+            <td><button class="btn-secondary" style="padding: 4px 10px; font-size: 0.75rem; cursor: pointer;" onclick="viewPassModal('${v.queueNo}')">View Slip</button></td>
+        </tr>
+    `).join('');
+}
+
+function viewPassModal(queueNo) {
+    const visitHistory = JSON.parse(sessionStorage.getItem('visitHistory')) || [];
+    const visit = visitHistory.find(v => v.queueNo === queueNo);
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || {};
+
+    if (!visit) return;
+
+    document.getElementById('modalQueueNo').textContent = visit.queueNo;
+    document.getElementById('modalStudentName').textContent = currentUser.name || 'Student';
+    document.getElementById('modalStudentID').textContent = currentUser.identifier || '---';
+    document.getElementById('modalStudentGrade').textContent = (currentUser.grade || '') + ' ' + (currentUser.section || '');
+    document.getElementById('modalVisitTime').textContent = visit.time;
+    document.getElementById('modalSymptoms').textContent = visit.symptoms;
+    document.getElementById('modalComplaint').textContent = visit.complaint || 'N/A';
+    document.getElementById('modalRestDuration').textContent = visit.rest;
+
+    const statusEl = document.getElementById('modalStatus');
+    statusEl.textContent = visit.status;
+    statusEl.className = 'status-pill pending';
+
+    const modal = document.getElementById('passModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+    }
+}
+
+function updateActiveQueueDisplay(visit) {
+    const queueContainer = document.getElementById('queueStatusContent');
+    if (queueContainer) {
+        queueContainer.innerHTML = `
+            <div class="queue-badge-box">
+                <span class="queue-num">${visit.queueNo}</span>
+                <span class="queue-status">${visit.status}</span>
+            </div>
+            <p style="font-size: 0.8rem; margin-top: 8px; color: var(--text-muted);">Rest Time: <strong>${visit.rest}</strong></p>
+        `;
     }
 }
 
@@ -49,182 +195,76 @@ function closePassModal() {
     }
 }
 
-function openPassModal(visit) {
-    if (!visit) return;
+// Navigation and session loading on page start
+document.addEventListener("DOMContentLoaded", () => {
+    const storedUser = sessionStorage.getItem('currentUser');
+    if (storedUser) {
+        const currentUser = JSON.parse(storedUser);
+        const nameEl = document.getElementById('navStudentName');
+        const idEl = document.getElementById('navStudentID');
 
-    const elQueue = document.getElementById('modalQueueNo');
-    const elName = document.getElementById('modalStudentName');
-    const elID = document.getElementById('modalStudentID');
-    const elGrade = document.getElementById('modalStudentGrade');
-    const elTime = document.getElementById('modalVisitTime');
-    const elSymptoms = document.getElementById('modalSymptoms');
-    const elComplaint = document.getElementById('modalComplaint');
-    const elRest = document.getElementById('modalRestDuration');
-    const elStatus = document.getElementById('modalStatus');
-
-    if (elQueue) elQueue.textContent = visit.queueNo || '#Q-000';
-    if (elName) elName.textContent = visit.studentName || '---';
-    if (elID) elID.textContent = visit.studentID || '---';
-    if (elGrade) elGrade.textContent = visit.gradeSection || '---';
-    if (elTime) elTime.textContent = visit.timestamp || '---';
-    if (elSymptoms) elSymptoms.textContent = Array.isArray(visit.symptoms) ? visit.symptoms.join(', ') : (visit.symptoms || 'None');
-    if (elComplaint) elComplaint.textContent = visit.complaint || 'N/A';
-    if (elRest) elRest.textContent = visit.restDuration || '0 Mins';
-    if (elStatus) elStatus.textContent = visit.status || 'Pending Triage';
-
-    const modal = document.getElementById('passModal');
-    if (modal) {
-        modal.classList.remove('hidden');
-        modal.style.display = 'flex';
-    }
-}
-
-function openPassModalById(visitId) {
-    if (typeof clinicVisits !== 'undefined') {
-        const visit = clinicVisits.find(v => v.id === visitId);
-        if (visit) openPassModal(visit);
-    }
-}
-
-function switchSection(sectionId, element) {
-    document.querySelectorAll('.dashboard-section').forEach(sec => sec.classList.add('hidden'));
-    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-
-    const target = document.getElementById(`sec-${sectionId}`);
-    if (target) target.classList.remove('hidden');
-    if (element) element.classList.add('active');
-}
-
-function calculateRestTime() {
-    const checked = document.querySelectorAll('input[name="symptoms"]:checked');
-    let maxRest = 0;
-    let hasHigh = false;
-    let hasMedium = false;
-
-    checked.forEach(cb => {
-        const rest = parseInt(cb.dataset.rest, 10) || 0;
-        const severity = cb.dataset.severity;
-
-        if (rest > maxRest) maxRest = rest;
-        if (severity === 'high') hasHigh = true;
-        if (severity === 'medium') hasMedium = true;
-    });
-
-    const display = document.getElementById('calculatedRestDisplay');
-    const badge = document.getElementById('severityDisplay');
-
-    if (display) display.textContent = `${maxRest} Minutes`;
-
-    if (badge) {
-        if (hasHigh) {
-            badge.textContent = 'High Severity (Priority)';
-            badge.style.background = '#fef2f2';
-            badge.style.color = '#ef4444';
-        } else if (hasMedium) {
-            badge.textContent = 'Moderate Concern';
-            badge.style.background = '#fffbe2';
-            badge.style.color = '#b45309';
-        } else {
-            badge.textContent = 'Standard / Low Severity';
-            badge.style.background = '#e2e8f0';
-            badge.style.color = '#475569';
-        }
-    }
-}
-
-function handleVisitSubmit(event) {
-    event.preventDefault();
-
-    const selectedSymptoms = Array.from(document.querySelectorAll('input[name="symptoms"]:checked')).map(cb => cb.value);
-    const chiefComplaint = document.getElementById('chiefComplaint').value.trim();
-    const restDuration = document.getElementById('calculatedRestDisplay') ? document.getElementById('calculatedRestDisplay').textContent : '0 Minutes';
-
-    if (selectedSymptoms.length === 0) {
-        alert('Please select at least one symptom.');
-        return;
+        if (nameEl) nameEl.textContent = currentUser.name;
+        if (idEl) idEl.textContent = currentUser.identifier;
     }
 
-    const queueCount = (typeof clinicVisits !== 'undefined') ? clinicVisits.length : 0;
-    const queueNumber = `Q-${String(queueCount + 1).padStart(3, '0')}`;
-
-    const newVisit = {
-        id: `VISIT-${Date.now()}`,
-        queueNo: queueNumber,
-        studentID: currentUser.identifier,
-        studentName: currentUser.name,
-        gradeSection: `${currentUser.grade || ''} ${currentUser.section || ''}`.trim() || 'N/A',
-        symptoms: selectedSymptoms,
-        complaint: chiefComplaint,
-        restDuration: restDuration,
-        status: 'Pending Triage',
-        timestamp: new Date().toLocaleString()
-    };
-
-    if (typeof clinicVisits !== 'undefined') {
-        clinicVisits.push(newVisit);
+    const savedVisit = sessionStorage.getItem('activeVisit');
+    if (savedVisit) {
+        updateActiveQueueDisplay(JSON.parse(savedVisit));
     }
 
-    const form = document.getElementById('visitForm');
-    if (form) form.reset();
+    loadVisitHistory();
+});
 
-    calculateRestTime();
+// Section switching logic for sidebar navigation tabs
+function switchSection(sectionId, btnElement) {
+    const sections = document.querySelectorAll('.dashboard-section');
+    sections.forEach(sec => sec.classList.add('hidden'));
 
-    openPassModal(newVisit);
-    renderActiveQueueStatus();
-    renderVisitHistory();
-}
-
-function renderActiveQueueStatus() {
-    if (typeof clinicVisits === 'undefined') return;
-
-    const studentId = currentUser.identifier;
-    const activeVisit = clinicVisits.slice().reverse().find(v => v.studentID === studentId && v.status === 'Pending Triage');
-
-    const container = document.getElementById('queueStatusContent');
-    if (!container) return;
-
-    if (activeVisit) {
-        container.innerHTML = `
-            <div class="queue-badge-box">
-                <span class="queue-num">${activeVisit.queueNo}</span>
-                <span class="queue-status">In Queue • ${activeVisit.status}</span>
-                <button type="button" class="btn-primary-sm mt-20" style="width:100%" onclick="openPassModalById('${activeVisit.id}')">View Health Slip</button>
-            </div>
-        `;
-    } else {
-        container.innerHTML = `<p class="no-queue">No active clinic visit currently pending.</p>`;
-    }
-}
-
-function renderVisitHistory() {
-    const tbody = document.getElementById('historyTableBody');
-    if (!tbody || typeof clinicVisits === 'undefined') return;
-
-    const userVisits = clinicVisits.filter(v => v.studentID === currentUser.identifier);
-
-    if (userVisits.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No medical visits recorded yet.</td></tr>`;
-        return;
+    const targetSection = document.getElementById('sec-' + sectionId);
+    if (targetSection) {
+        targetSection.classList.remove('hidden');
     }
 
-    tbody.innerHTML = userVisits.map(v => `
-        <tr>
-            <td>${v.timestamp}</td>
-            <td><strong>${v.queueNo}</strong></td>
-            <td>${v.symptoms.join(', ')}</td>
-            <td>${v.restDuration}</td>
-            <td><span class="status-pill ${v.status === 'Cleared' ? 'cleared' : 'pending'}">${v.status}</span></td>
-            <td><button type="button" class="btn-secondary" onclick="openPassModalById('${v.id}')">Slip</button></td>
-        </tr>
-    `).join('');
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+    if (btnElement) {
+        btnElement.classList.add('active');
+    }
+
+    // Refresh history table when visiting the history tab
+    if (sectionId === 'my-history') {
+        loadVisitHistory();
+    }
 }
 
 function handleLogout() {
+    sessionStorage.removeItem('currentUser');
+    sessionStorage.removeItem('activeVisit');
+    sessionStorage.removeItem('visitHistory');
     window.location.href = '../index.html';
 }
+// Toggle mobile sidebar drawer
+function toggleMobileSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('mobile-open');
+    }
+}
 
-window.closePassModal = closePassModal;
-window.openPassModalById = openPassModalById;
+document.addEventListener('click', function(event) {
+    const sidebar = document.querySelector('.sidebar');
+    const hamburger = document.querySelector('.hamburger-btn');
+
+    if (window.innerWidth <= 768 && sidebar && sidebar.classList.contains('mobile-open')) {
+        if (!sidebar.contains(event.target) && hamburger && !hamburger.contains(event.target)) {
+            sidebar.classList.remove('mobile-open');
+        }
+    }
+});
+
+window.toggleMobileSidebar = toggleMobileSidebar;
 window.switchSection = switchSection;
 window.handleVisitSubmit = handleVisitSubmit;
+window.closePassModal = closePassModal;
 window.handleLogout = handleLogout;
+window.viewPassModal = viewPassModal;

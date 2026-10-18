@@ -11,7 +11,8 @@
     --warning: #f59e0b;
     --danger: #ef4444;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif;  }
 
 body {
     background-color: #0b0f19;
@@ -27,9 +28,8 @@ body {
     position: fixed; border-radius: 50%; filter: blur(100px); z-index: 0; opacity: 0.35; pointer-events: none;
 }
 
-.orb-1 { width: 500px; height: 500px; background: #3v82f6; top: -10%; left: -10%; }
+.orb-1 { width: 500px; height: 500px; background: #3b82f6; top: -10%; left: -10%; }
 .orb-2 { width: 400px; height: 400px; background: #06b6d4; bottom: -10%; right: -5%; }
-
 
 .app-header {
     position: relative; z-index: 10;
@@ -42,7 +42,7 @@ body {
 .brand { display: flex; align-items: center; gap: 10px; }
 .logo-icon { background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; font-weight: 800; }
 .logo-text { font-size: 1.4rem; font-weight: 800; letter-spacing: 1px; }
-.badge { background: rgba(255, 255, 255, 0.1); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; color: #38bdf8l font-weight: 600; }
+.badge { background: rgba(255, 255, 255, 0.1); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; color: #38bdf8; font-weight: 600; }
 .user-profile { display: flex; align-items: center; gap: 16px; }
 .profile-info { display: flex; flex-direction: column; text-align: right; }
 .user-name { font-weight: 600; font-size: 0.9rem; }
@@ -133,7 +133,38 @@ textarea:focus { border-color: var(--primary); }
 .btn-secondary { padding: 8px 16px; background: #e2e8f0; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
 .btn-primary-sm { padding: 8px 18px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
 
+.health-pass-slip {
+    width: 250px;
+    padding: 12px;
+    margin: 10px auto;
+    font-family: monospace, sans-serif;
+    font-size: 11px;
+    line-height: 1.3;
+    border: 1px dashed #555;
+    background-color: #fff;
+    color: #000;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+.health-pass-slip h3 {
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #000;
+    padding-bottom: 4px;
+}
+
+.health-pass-slip p {
+    margin: 4px 0;
+}
+
 @media print {
+    @page {
+        size: portrait;
+        margin: 5mm;
+    }
+
     body * {
         visibility: hidden !important;
     }
@@ -148,21 +179,157 @@ textarea:focus { border-color: var(--primary); }
         top: 0 !important;
         width: 100% !important;
         height: auto !important;
-        background: transparent !important;
-        backdrop-filter: none !important;
-        padding: 0 !important;
+        background: white !important;
         display: block !important;
+        backdrop-filter: none !important;
+        z-index: 9999 !important;
+        padding: 0 !important;
     }
 
+    /* True 1/8 Index Card dimensions & crisp layout */
     .pass-card {
-        max-width: 100% !important;
+        width: 240px !important;
+        max-width: 240px !important;
         box-shadow: none !important;
-        border: 2px solid #000 !important;
-        border-radius: 8px !important;
-        margin: 0 auto !important;
+        border: 1.5px dashed #0f172a !important;
+        border-radius: 6px !important;
+        background: white !important;
+        margin: 5px auto !important;
+        padding: 6px !important;
+        font-size: 9px !important;
+    }
+
+    /* Force colors to show when printing */
+    .pass-header {
+        background: #0f172a !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        padding: 6px 8px !important;
+        border-radius: 4px 4px 0 0 !important;
+    }
+
+    .pass-header h2 {
+        color: white !important;
+        font-size: 10px !important;
+        letter-spacing: 0.5px;
+    }
+
+    .pass-header p {
+        color: #94a3b8 !important;
+        font-size: 7px !important;
+    }
+
+    .pass-badge {
+        background: #2563eb !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        font-size: 8px !important;
+        padding: 2px 6px !important;
+    }
+
+    .pass-body {
+        padding: 6px !important;
+        gap: 4px !important;
+        font-size: 8.5px !important;
+    }
+
+    .pass-row {
+        font-size: 8.5px !important;
+        margin-bottom: 2px;
+    }
+
+    .pass-detail strong {
+        font-size: 7.5px !important;
+    }
+
+    .pass-detail p {
+        font-size: 8.5px !important;
+        margin: 2px 0 !important;
+    }
+
+    .pass-highlight {
+        background: #f1f5f9 !important;
+        border: 1px solid #cbd5e1 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        padding: 5px !important;
+        font-size: 8.5px !important;
+        border-radius: 4px !important;
     }
 
     .modal-footer {
         display: none !important;
+    }
+}
+.hamburger-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #0f172a;
+    padding: 4px 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Make tables scrollable horizontally on mobile */
+.card table, .dashboard-section table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile Screen Breakpoint (Screens <= 768px) */
+@media screen and (max-width: 768px) {
+    .dashboard-wrapper {
+        flex-direction: column !important;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Transform sidebar into a hidden slide-out drawer */
+    .sidebar {
+        position: fixed !important;
+        top: 0;
+        left: -280px;
+        width: 260px !important;
+        height: 100vh !important;
+        z-index: 10000 !important;
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+    }
+
+    /* When active class is added via JS, slide it into view */
+    .sidebar.mobile-open {
+        transform: translateX(280px);
+    }
+
+    .main-content {
+        padding: 15px !important;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .top-bar {
+        flex-direction: row !important;
+        gap: 10px;
+        padding: 12px 15px !important;
+    }
+
+    .hamburger-btn {
+        display: flex !important;
+    }
+
+    .metrics-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .grid-2 {
+        grid-template-columns: 1fr !important;
     }
 }

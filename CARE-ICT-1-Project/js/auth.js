@@ -22,7 +22,6 @@ function switchTab(tab) {
     }
 }
 
-// nagdidiisplay ng alert messages
 function showAlert(message, type = 'error') {
     const alertBox = document.getElementById('alertBox');
     if (alertBox) {
@@ -81,13 +80,11 @@ function handleSignup(event) {
         alertBox.classList.remove('hidden');
     }
 
-    // ito yung nagchecheck na lahat ay hindi empty
     if (!fullNameInput || !studentIDInput || !gradeInput || !sectionInput || !contactInput || !passwordInput || !confirmPassword) {
         showAlert("Please fill out all required fields!", "error");
         return;
     }
 
-    // nag checheck na bawal ang numbers sa Full Name
     const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     let nameHasNumber = false;
 
@@ -103,7 +100,6 @@ function handleSignup(event) {
         return;
     }
 
-    // ito ang nagchecheck na meron dapat ng first and last name
     const nameWords = fullNameInput.split(' ').filter(word => word.length > 0);
 
     if (nameWords.length < 2) {
@@ -111,42 +107,52 @@ function handleSignup(event) {
         return;
     }
 
-    // nag checheck na dapat may - or letters ang student ID
-    let studentIDHasLetter = false;
-    const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const validIdChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', ','];
+    let isIdValid = true;
 
     for (let char of studentIDInput) {
-        if (alphabet.includes(char)) {
-            studentIDHasLetter = true;
+        if (!validIdChars.includes(char)) {
+            isIdValid = false;
             break;
         }
     }
 
-    if (!studentIDHasLetter) {
-        showAlert("Student ID cannot be numbers only! Please include letters or hyphens (e.g. 2024-12345 or STU-123).", "error");
+    if (!isIdValid) {
+        showAlert("Student ID can only contain numbers, hyphens (-), and commas (,).", "error");
         return;
     }
 
-    // nagchecheck na nagmatch yung password
     if (passwordInput !== confirmPassword) {
         showAlert("Passwords do not match!", "error");
         return;
     }
 
-    // yung checker na dapat inaccept sa terms and condition
     if (!termsCheck) {
         showAlert("You must agree to the Terms & Conditions to register.", "error");
         return;
     }
 
-    // pag naaccept na ang and registration
-    showAlert("Account registered successfully! Redirecting...", "success");
+    const newStudentUser = {
+        identifier: studentIDInput,
+        password: passwordInput,
+        role: 'student',
+        name: fullNameInput,
+        grade: gradeInput,
+        section: sectionInput,
+        contact: contactInput
+    };
+
+    let sessionUsers = JSON.parse(sessionStorage.getItem('sessionUsers')) || [];
+    sessionUsers.push(newStudentUser);
+    sessionStorage.setItem('sessionUsers', JSON.stringify(sessionUsers));
+
+    sessionStorage.setItem('currentUser', JSON.stringify(newStudentUser));
+
+    showAlert("Account registered successfully! Redirecting to dashboard...", "success");
 
     setTimeout(() => {
-        if (typeof switchTab === 'function') {
-            switchTab('login');
-        }
-    }, 1500);
+        window.location.href = 'pages/student.html';
+    }, 1200);
 }
 
 function handleLogin(event) {
@@ -156,8 +162,10 @@ function handleLogin(event) {
     const identifier = document.getElementById('loginIdentifier').value.trim();
     const password = document.getElementById('loginPassword').value;
 
-    // dito nagsesearch kung yung account ay nasa existing
-    const user = userDatabase.find(u =>
+    let sessionUsers = JSON.parse(sessionStorage.getItem('sessionUsers')) || [];
+    const allUsers = [...userDatabase, ...sessionUsers];
+
+    const user = allUsers.find(u =>
         u.identifier.toLowerCase() === identifier.toLowerCase() &&
         u.password === password &&
         u.role === role
@@ -168,7 +176,7 @@ function handleLogin(event) {
         return;
     }
 
-    currentUser = user;
+    sessionStorage.setItem('currentUser', JSON.stringify(user));
 
     showAlert('Login successful! Redirecting...', 'success');
 
@@ -188,6 +196,18 @@ function handleLogin(event) {
     }, 1000);
 }
 
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(inputId + '-icon');
+    if (input.type === "password") {
+        input.type = "text";
+        if (icon) icon.src = "assets/open-eye.png";
+    } else {
+        input.type = "password";
+        if (icon) icon.src = "assets/close-eye.png";
+    }
+}
+
 window.switchTab = switchTab;
 window.handleSignup = handleSignup;
 window.handleLogin = handleLogin;
@@ -195,3 +215,4 @@ window.openTermsModal = openTermsModal;
 window.closeTermsModal = closeTermsModal;
 window.closeTermsModalOnOverlay = closeTermsModalOnOverlay;
 window.acceptTermsFromModal = acceptTermsFromModal;
+window.togglePassword = togglePassword;

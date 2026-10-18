@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C.A.R.E. - Campus Health System</title>
+    <title>C.A.R.E - Campus Health System</title>
     <link rel="stylesheet" href="css/auth.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
           rel="stylesheet">
@@ -19,7 +19,7 @@
             <div class="brand-badge">
                 <span class="pulse-dot"></span> Official Campus Clinic Portal
             </div>
-            <h1>C.A.R.E.</h1>
+            <h1>C.A.R.E</h1>
             <p class="brand-subtitle">Campus Health, Medical Assessment, & Record Entry System</p>
 
             <div class="feature-pills">
@@ -85,8 +85,15 @@
 
                 <div class="input-field">
                     <label for="loginPassword">Password</label>
-                    <div class="input-wrapper">
-                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    <div class="input-wrapper" style="position: relative;">
+                        <input type="password" id="loginPassword" placeholder="••••••••"
+                               style="width: 100%; padding-right: 40px;" required>
+                        <button type="button" onclick="togglePassword('loginPassword')"
+                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 4px;"
+                                title="Show/Hide Password">
+                            <img id="loginPassword-icon" src="assets/close-eye.png" alt="Toggle Password"
+                                 style="width: 20px; height: 20px; object-fit: contain;">
+                        </button>
                     </div>
                 </div>
 
@@ -142,11 +149,29 @@
                 <div class="grid-2">
                     <div class="input-field">
                         <label for="signupPassword">Password</label>
-                        <input type="password" id="signupPassword" placeholder="••••••••">
+                        <div class="input-wrapper" style="position: relative;">
+                            <input type="password" id="signupPassword" placeholder="••••••••"
+                                   style="width: 100%; padding-right: 40px;">
+                            <button type="button" onclick="togglePassword('signupPassword')"
+                                    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 4px;"
+                                    title="Show/Hide Password">
+                                <img id="signupPassword-icon" src="assets/close-eye.png" alt="Toggle Password"
+                                     style="width: 20px; height: 20px; object-fit: contain;">
+                            </button>
+                        </div>
                     </div>
                     <div class="input-field">
                         <label for="signupConfirmPassword">Confirm Password</label>
-                        <input type="password" id="signupConfirmPassword" placeholder="••••••••">
+                        <div class="input-wrapper" style="position: relative;">
+                            <input type="password" id="signupConfirmPassword" placeholder="••••••••"
+                                   style="width: 100%; padding-right: 40px;">
+                            <button type="button" onclick="togglePassword('signupConfirmPassword')"
+                                    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 4px;"
+                                    title="Show/Hide Password">
+                                <img id="signupConfirmPassword-icon" src="assets/close-eye.png" alt="Toggle Password"
+                                     style="width: 20px; height: 20px; object-fit: contain;">
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -155,9 +180,9 @@
                         <input type="checkbox" id="signupTerms">
                         <span class="checkmark"></span>
                         <span class="terms-text">
-                I agree to the <a href="#" onclick="openTermsModal(event)">Terms & Conditions</a> and <a href="#"
-                                                                                                         onclick="openTermsModal(event)">Data Privacy Notice</a>.
-            </span>
+                            I agree to the <a href="#" onclick="openTermsModal(event)">Terms & Conditions</a> and <a
+                                href="#" onclick="openTermsModal(event)">Data Privacy Notice</a>.
+                        </span>
                     </label>
                 </div>
 
@@ -182,8 +207,8 @@
         <div class="modal-body">
             <h4>1. Data Processing and In-Memory Handling</h4>
             <p>Welcome to CARE: Campus Health, Medical Assessment, and Record Entry System. Please note that this system
-                operates entirely using in-memory JavaScript data structures during active runtime session interaction.
-            </p>
+                operates entirely using in-memory JavaScript data structures during active runtime session
+                interaction.</p>
 
             <h4>2. No Persistent Web Storage</h4>
             <p>To comply with course guidelines and browser security standards, no personal health data, login
@@ -194,10 +219,12 @@
             <p>All entered student information, clinic check-in logs, queue numbers, and generated medical passes are
                 stored temporarily for active session rendering. Closing or refreshing the browser page will instantly
                 reset active queue entries and session data.</p>
+
             <h4>4. Scope of Use</h4>
             <p>The system is designed strictly for routine student health check-ins, symptom selections, and basic
                 clinic visit summary generation within campus limits. It does not replace emergency medical response
                 systems.</p>
+
             <h4>5. User Responsibilities</h4>
             <p>Students must provide accurate emergency contact details and truthful health information to assist clinic
                 nurses and staff in delivering proper on-campus care.</p>
