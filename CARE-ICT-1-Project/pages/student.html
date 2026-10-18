@@ -12,7 +12,7 @@
 <div class="bg-orb orb-1"></div>
 <div class="bg-orb orb-2"></div>
 
-<!-- Navigation Header -->
+<!-- pinaka navigation error ng system -->
 <header class="app-header">
     <div class="header-container">
         <div style="display: flex; align-items: center; gap: 12px;">
@@ -41,7 +41,7 @@
 </header>
 
 <main class="dashboard-layout">
-    <!-- Sidebar Navigation -->
+    <!-- sidebar sa gitna -->
     <aside class="sidebar">
         <nav class="nav-menu">
             <button class="nav-item active" onclick="switchSection('new-visit', this)">
@@ -76,10 +76,10 @@
         </div>
     </aside>
 
-    <!-- Main Content Area -->
+    <!-- pinaka content -->
     <section class="content-area">
 
-        <!-- SECTION 1: LOG VISIT FORM -->
+        <!-- yung log in visit form -->
         <div id="sec-new-visit" class="dashboard-section active">
             <div class="section-title">
                 <h2>Campus Health Check-in</h2>
@@ -87,7 +87,7 @@
             </div>
 
             <form id="visitForm" onsubmit="handleVisitSubmit(event)">
-                <!-- Symptom Selector Grid -->
+                <!-- yung symptom selector grid -->
                 <div class="card-box">
                     <h3>1. Symptom & Health Concern Selector</h3>
                     <p class="hint">Check all symptoms that apply to you today:</p>
@@ -148,7 +148,7 @@
                     </div>
                 </div>
 
-                <!-- Additional Details -->
+                <!-- extra details sa baba ng symptom grid -->
                 <div class="card-box mt-20">
                     <h3>2. Chief Complaint & Details</h3>
                     <div class="form-group">
@@ -158,7 +158,7 @@
                                   required></textarea>
                     </div>
 
-                    <!-- Real-time Calculated Rest Time Preview -->
+                    <!-- yung estimated rest duration -->
                     <div class="rest-preview-box">
                         <div class="rest-info">
                             <span>Estimated Rest Pass Duration:</span>
@@ -198,14 +198,14 @@
                         </tr>
                         </thead>
                         <tbody id="historyTableBody">
-                        <!-- Dynamically populated by JS -->
+                        <!-- hayaan mo to student.js ang bahala dyan -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- SECTION 3: CLINIC MAP -->
+        <!-- yung clinic map-->
         <div id="sec-clinic-map" class="dashboard-section hidden">
             <div class="section-title">
                 <h2>Campus Clinic Location Map</h2>
@@ -213,7 +213,7 @@
             </div>
             <div class="card-box map-card">
 
-                <!-- NEW GOOGLE MAPS IFRAME -->
+                <!-- Googlemap Iframe -->
                 <div class="map-container"
                      style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px;">
                     <iframe
@@ -238,7 +238,7 @@
     </section>
 </main>
 
-<!-- PRINTABLE DIGITAL HEALTH PASS MODAL -->
+<!-- yung sa card pag magpiprint ka na -->
 <div id="passModal" class="modal-overlay hidden" style="display: none;">
     <div class="modal-card pass-card">
         <div class="pass-header">

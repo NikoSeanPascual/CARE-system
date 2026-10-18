@@ -14,7 +14,7 @@ function updateRestPreview() {
         const rest = parseInt(cb.getAttribute('data-rest')) || 0;
         const severity = cb.getAttribute('data-severity') || 'low';
 
-        // Take the maximum rest time instead of adding them all up
+        // kinukuha yung maximum rest time sa halip na iadd sila lahat
         if (rest > maxRest) {
             maxRest = rest;
         }
@@ -39,7 +39,7 @@ function updateRestPreview() {
     }
 }
 
-// Handle Visit Form Submission & Queue Generation
+// yung naghahandle ng mga  Visit Form Submission at Queue Generation
 function handleVisitSubmit(event) {
     event.preventDefault();
 
@@ -83,7 +83,6 @@ function handleVisitSubmit(event) {
     const queueNo = "#Q-" + Math.floor(100 + Math.random() * 900);
     const visitTime = new Date().toLocaleString();
 
-    // Populate Modal fields
     document.getElementById('modalQueueNo').textContent = queueNo;
     document.getElementById('modalStudentName').textContent = currentUser.name;
     document.getElementById('modalStudentID').textContent = currentUser.identifier;
@@ -97,7 +96,6 @@ function handleVisitSubmit(event) {
     statusEl.textContent = 'Pending Triage (' + maxSeverity + ')';
     statusEl.className = 'status-pill pending';
 
-    // Save active visit for sidebar
     const activeVisit = {
         queueNo: queueNo,
         symptoms: symptomList.join(', '),
@@ -109,13 +107,12 @@ function handleVisitSubmit(event) {
     };
     sessionStorage.setItem('activeVisit', JSON.stringify(activeVisit));
 
-    // Save to Visit History array in sessionStorage
     let visitHistory = JSON.parse(sessionStorage.getItem('visitHistory')) || [];
-    visitHistory.unshift(activeVisit); // Add new visit to the top
+    visitHistory.unshift(activeVisit);
     sessionStorage.setItem('visitHistory', JSON.stringify(visitHistory));
 
     updateActiveQueueDisplay(activeVisit);
-    loadVisitHistory(); // Refresh history table data
+    loadVisitHistory();
 
     const modal = document.getElementById('passModal');
     if (modal) {
@@ -195,7 +192,6 @@ function closePassModal() {
     }
 }
 
-// Navigation and session loading on page start
 document.addEventListener("DOMContentLoaded", () => {
     const storedUser = sessionStorage.getItem('currentUser');
     if (storedUser) {
@@ -215,7 +211,6 @@ document.addEventListener("DOMContentLoaded", () => {
     loadVisitHistory();
 });
 
-// Section switching logic for sidebar navigation tabs
 function switchSection(sectionId, btnElement) {
     const sections = document.querySelectorAll('.dashboard-section');
     sections.forEach(sec => sec.classList.add('hidden'));
@@ -231,7 +226,6 @@ function switchSection(sectionId, btnElement) {
         btnElement.classList.add('active');
     }
 
-    // Refresh history table when visiting the history tab
     if (sectionId === 'my-history') {
         loadVisitHistory();
     }
@@ -243,7 +237,6 @@ function handleLogout() {
     sessionStorage.removeItem('visitHistory');
     window.location.href = '../index.html';
 }
-// Toggle mobile sidebar drawer
 function toggleMobileSidebar() {
     const sidebar = document.querySelector('.sidebar');
     if (sidebar) {

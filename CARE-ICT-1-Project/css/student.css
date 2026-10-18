@@ -186,7 +186,6 @@ textarea:focus { border-color: var(--primary); }
         padding: 0 !important;
     }
 
-    /* True 1/8 Index Card dimensions & crisp layout */
     .pass-card {
         width: 240px !important;
         max-width: 240px !important;
@@ -199,7 +198,6 @@ textarea:focus { border-color: var(--primary); }
         font-size: 9px !important;
     }
 
-    /* Force colors to show when printing */
     .pass-header {
         background: #0f172a !important;
         color: white !important;
@@ -275,7 +273,7 @@ textarea:focus { border-color: var(--primary); }
     justify-content: center;
 }
 
-/* Make tables scrollable horizontally on mobile */
+/* iniba yung tables sa cellphone pa horizontally*/
 .card table, .dashboard-section table {
     display: block;
     width: 100%;
@@ -284,7 +282,7 @@ textarea:focus { border-color: var(--primary); }
     -webkit-overflow-scrolling: touch;
 }
 
-/* Mobile Screen Breakpoint (Screens <= 768px) */
+/* Mobile Screen responsiveness medyo nahirapan ako dto :(*/
 @media screen and (max-width: 768px) {
     .dashboard-wrapper {
         flex-direction: column !important;
@@ -292,7 +290,6 @@ textarea:focus { border-color: var(--primary); }
         overflow-x: hidden;
     }
 
-    /* Transform sidebar into a hidden slide-out drawer */
     .sidebar {
         position: fixed !important;
         top: 0;
@@ -303,8 +300,6 @@ textarea:focus { border-color: var(--primary); }
         transition: transform 0.3s ease-in-out;
         box-shadow: 5px 0 15px rgba(0,0,0,0.2);
     }
-
-    /* When active class is added via JS, slide it into view */
     .sidebar.mobile-open {
         transform: translateX(280px);
     }

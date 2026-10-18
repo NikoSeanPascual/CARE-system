@@ -42,7 +42,7 @@ function renderQueueTable() {
         else if (visit.status.includes('Rest') || visit.status.includes('Approved')) restingCount++;
         else if (visit.status.includes('Cleared')) clearedCount++;
 
-        // Use stored student name or current user fallback
+        // ginagamit yung  stored student name or current user na parang fallback
         const studentName = visit.studentName || currentUser.name || "Student Patient";
 
         return `

@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
           rel="stylesheet">
     <style>
-        /* Guaranteed modal styling and clickability */
+        /* internal muna kasi kinulang ng oras para gumawa ng seperate na css para lagyan ng css*/
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -72,7 +72,7 @@
             </div>
         </header>
 
-        <!-- SECTION 1: LIVE QUEUE MANAGEMENT -->
+        <!-- ito yung queue management -->
         <section id="sec-queue" class="dashboard-section">
             <div class="metrics-grid"
                  style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
@@ -107,13 +107,13 @@
                     </tr>
                     </thead>
                     <tbody id="staffQueueTableBody">
-                    <!-- Populated dynamically by staff.js -->
+                    <!-- hayaan mo ito bahala si staff.js dito -->
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- SECTION 2: BASIC MEDICINE INVENTORY -->
+        <!-- medicine history ito -->
         <section id="sec-inventory" class="dashboard-section hidden">
             <div class="card" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
                 <h3 style="color: #0f172a; margin-bottom: 5px;">Basic Clinic Medicine Supply Stocks</h3>
@@ -137,7 +137,6 @@
     </main>
 </div>
 
-<!-- UPDATE VISIT MODAL -->
 <div id="actionModal" class="modal-overlay hidden">
     <div class="modal-card"
          style="background: white; width: 420px; padding: 25px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
