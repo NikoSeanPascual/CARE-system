@@ -9,19 +9,22 @@ function switchTab(tab) {
 
     if (tab === 'login') {
         loginForm.classList.remove('hidden');
+        loginForm.classList.add('form-fade-in');
         signupForm.classList.add('hidden');
+        signupForm.classList.remove('form-fade-in');
         toggleLoginBtn.classList.add('active');
         toggleSignupBtn.classList.remove('active');
         if (glider) glider.style.transform = 'translateX(0%)';
     } else {
         signupForm.classList.remove('hidden');
+        signupForm.classList.add('form-fade-in');
         loginForm.classList.add('hidden');
+        loginForm.classList.remove('form-fade-in');
         toggleSignupBtn.classList.add('active');
         toggleLoginBtn.classList.remove('active');
         if (glider) glider.style.transform = 'translateX(100%)';
     }
 }
-
 function showAlert(message, type = 'error') {
     const alertBox = document.getElementById('alertBox');
     if (alertBox) {
@@ -85,7 +88,7 @@ function handleSignup(event) {
         return;
     }
 
-    const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '/', '[', ']', '{', '}', '|', '<', '>', '?', ','];
     let nameHasNumber = false;
 
     for (let char of fullNameInput) {
@@ -96,7 +99,7 @@ function handleSignup(event) {
     }
 
     if (nameHasNumber) {
-        showAlert("Full Name cannot contain numbers!", "error");
+        showAlert("Full Name cannot contain numbers or symbols!", "error");
         return;
     }
 
@@ -107,7 +110,7 @@ function handleSignup(event) {
         return;
     }
 
-    const validIdChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', ','];
+    const validIdChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', ',', '_'];
     let isIdValid = true;
 
     for (let char of studentIDInput) {
@@ -121,6 +124,22 @@ function handleSignup(event) {
         showAlert("Student ID can only contain numbers, hyphens (-), and commas (,).", "error");
         return;
     }
+
+    // --- NEW PASSWORD VALIDATION RULES ---
+    if (passwordInput.length < 8) {
+        showAlert("Password must be at least 8 characters long!", "error");
+        return;
+    }
+
+    const hasLetter = /[a-zA-Z]/.test(passwordInput);
+    const hasNumber = /[0-9]/.test(passwordInput);
+    const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(passwordInput);
+
+    if (!hasLetter || !hasNumber || !hasSymbol) {
+        showAlert("Password must include at least 1 letter, 1 number, and 1 special symbol (e.g. $@#)!", "error");
+        return;
+    }
+    // -------------------------------------
 
     if (passwordInput !== confirmPassword) {
         showAlert("Passwords do not match!", "error");

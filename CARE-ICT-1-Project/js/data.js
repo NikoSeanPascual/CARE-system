@@ -10,8 +10,8 @@ const userDatabase = [
         section: 'ICT-1'
     },
     {
-        identifier: 'staff01',
-        password: 'staff123',
+        identifier: 'staff61245',
+        password: 'staff98234',
         name: 'Nurse Martinez',
         role: 'staff'
     },

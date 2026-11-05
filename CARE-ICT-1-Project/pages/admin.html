@@ -2,9 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C.A.R.E. - Admin & Head Nurse Portal</title>
+    <link rel="stylesheet" href="../css/student.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
 </head>
 <body>
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
 
+<header class="app-header">
+    <div class="header-container">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <button class="hamburger-btn" onclick="toggleMobileSidebar()" title="Toggle Menu">☰</button>
+            <div class="brand">
+                <span class="logo-icon" style="background: #ef4444;">✚</span>
+                <span class="logo-text">C.A.R.E.</span>
+                <span class="badge" style="color: #fca5a5;">Head Nurse Console</span>
+            </div>
+        </div>
+        <div class="user-profile">
+            <div class="profile-info">
+                <span id="navAdminName" class="user-name">Head Nurse Admin</span>
+                <span class="user-id">System Administrator</span>
+            </div>
+            <button class="btn-logout" onclick="handleLogout()">
+                <span>Logout</span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <nav class="nav-menu">
+            <button class="nav-item active" onclick="switchAdminSection('dashboard', this)">
+                <span>Operations Dashboard</span>
+            </button>
+            <button class="nav-item" onclick="switchAdminSection('records', this)">
+                <span>Student Health Logs</span>
+            </button>
+            <button class="nav-item" onclick="switchAdminSection('inventory', this)">
+                <span>Supply Management</span>
+            </button>
+        </nav>
+    </aside>
+
+    <main class="content-area">
+        <!-- DASHBOARD -->
+        <section id="sec-dashboard" class="dashboard-section">
+            <div class="section-title">
+                <h2>Head Nurse Management Console</h2>
+                <p>Monitor daily health analytics, medicine distribution totals, and student records.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                <div class="card-box">
+                    <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Total Daily Visitors</span>
+                    <h2 id="adminVisitorTotal" style="font-size: 2.2rem; margin-top: 6px; color: #38bdf8;">0</h2>
+                </div>
+                <div class="card-box">
+                    <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Active Patients</span>
+                    <h2 id="adminActiveTotal" style="font-size: 2.2rem; margin-top: 6px; color: #fbbf24;">0</h2>
+                </div>
+                <div class="card-box">
+                    <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Medicines Dispensed</span>
+                    <h2 id="adminMedsDispensed" style="font-size: 2.2rem; margin-top: 6px; color: #34d399;">0</h2>
+                </div>
+            </div>
+
+            <div class="card-box">
+                <h3>Frequent Health Complaints & Symptom Rate</h3>
+                <div id="symptomAnalyticsList"
+                     style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;"></div>
+            </div>
+        </section>
+
+        <!-- RECORDS -->
+        <section id="sec-records" class="dashboard-section hidden">
+            <div class="section-title">
+                <h2>Comprehensive Health Records</h2>
+                <p>View all student clinic check-ins and treatment logs.</p>
+            </div>
+            <div class="card-box">
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Queue #</th>
+                            <th>Student Name</th>
+                            <th>Symptoms</th>
+                            <th>Rest Duration</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody id="adminRecordsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- INVENTORY -->
+        <section id="sec-inventory" class="dashboard-section hidden">
+            <div class="section-title">
+                <h2>Medicine Supply Management</h2>
+                <p>Manage stock levels and supply availability.</p>
+            </div>
+            <div class="card-box">
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                            <th>Stock Remaining</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody id="adminInventoryTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="../js/data.js"></script>
+<script src="../js/admin.js"></script>
 </body>
 </html>

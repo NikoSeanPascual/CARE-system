@@ -16,6 +16,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (nameEl) nameEl.textContent = currentUser.name || "Clinic Staff";
     }
 
+    // Ensure modal is hidden initially on load
+    const modal = document.getElementById('actionModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+    }
+
     renderQueueTable();
     renderInventoryTable();
 });
@@ -24,7 +31,7 @@ function renderQueueTable() {
     const tbody = document.getElementById('staffQueueTableBody');
     if (!tbody) return;
 
-    const visitHistory = JSON.parse(sessionStorage.getItem('visitHistory')) || [];
+    const visitHistory = JSON.parse(localStorage.getItem('visitHistory')) || [];
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || {};
 
     let pendingCount = 0;
@@ -32,28 +39,27 @@ function renderQueueTable() {
     let clearedCount = 0;
 
     if (visitHistory.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #64748b; padding: 25px;">No patient check-ins found in the queue.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted, #64748b); padding: 25px;">No patient check-ins found in the queue.</td></tr>`;
         updateMetrics(0, 0, 0);
         return;
     }
 
     tbody.innerHTML = visitHistory.map(visit => {
-        if (visit.status.includes('Pending')) pendingCount++;
-        else if (visit.status.includes('Rest') || visit.status.includes('Approved')) restingCount++;
-        else if (visit.status.includes('Cleared')) clearedCount++;
+        if (visit.status && visit.status.includes('Pending')) pendingCount++;
+        else if (visit.status && (visit.status.includes('Rest') || visit.status.includes('Approved'))) restingCount++;
+        else if (visit.status && visit.status.includes('Cleared')) clearedCount++;
 
-        // ginagamit yung  stored student name or current user na parang fallback
         const studentName = visit.studentName || currentUser.name || "Student Patient";
 
         return `
-            <tr style="border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; color: #1e293b;">
-                <td style="padding: 14px; font-weight: bold; color: #2563eb;">${visit.queueNo}</td>
-                <td style="padding: 14px;">${studentName}</td>
-                <td style="padding: 14px; color: #475569;">${visit.symptoms}</td>
-                <td style="padding: 14px; font-weight: 600;">${visit.rest}</td>
-                <td style="padding: 14px;"><span style="padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; background: #e2e8f0; color: #334155;">${visit.status}</span></td>
-                <td style="padding: 14px;">
-                    <button onclick="openActionModal('${visit.queueNo}')" style="background: #2563eb; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Manage</button>
+            <tr>
+                <td style="font-weight: bold; color: #2563eb;">${visit.queueNo}</td>
+                <td>${studentName}</td>
+                <td>${visit.symptoms}</td>
+                <td style="font-weight: 600;">${visit.rest}</td>
+                <td><span class="status-pill pending">${visit.status}</span></td>
+                <td>
+                    <button class="btn-primary-sm" onclick="openActionModal('${visit.queueNo}')">Manage</button>
                 </td>
             </tr>
         `;
@@ -63,46 +69,61 @@ function renderQueueTable() {
 }
 
 function updateMetrics(pending, resting, cleared) {
-    document.getElementById('metricPending').textContent = pending;
-    document.getElementById('metricResting').textContent = resting;
-    document.getElementById('metricCleared').textContent = cleared;
+    const pEl = document.getElementById('metricPending');
+    const rEl = document.getElementById('metricResting');
+    const cEl = document.getElementById('metricCleared');
+
+    if (pEl) pEl.textContent = pending;
+    if (rEl) rEl.textContent = resting;
+    if (cEl) cEl.textContent = cleared;
 }
 
 function renderInventoryTable() {
     const tbody = document.getElementById('staffInventoryTableBody');
     if (!tbody) return;
 
-    let inventory = JSON.parse(sessionStorage.getItem('clinicInventory')) || defaultInventory;
+    let inventory = JSON.parse(localStorage.getItem('clinicInventory')) || defaultInventory;
 
     tbody.innerHTML = inventory.map(item => `
-        <tr style="border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; color: #1e293b;">
-            <td style="padding: 14px; font-weight: 600;">${item.name}</td>
-            <td style="padding: 14px; color: #475569;">${item.category}</td>
-            <td style="padding: 14px;">${item.stock} units</td>
-            <td style="padding: 14px;"><span style="color: ${item.stock < 20 ? '#dc2626' : '#16a34a'}; font-weight: 600;">${item.status}</span></td>
+        <tr>
+            <td style="font-weight: 600;">${item.name}</td>
+            <td>${item.category}</td>
+            <td>${item.stock} units</td>
+            <td><span style="color: ${item.stock < 20 ? '#ef4444' : '#10b981'}; font-weight: 600;">${item.status}</span></td>
         </tr>
     `).join('');
 }
 
 function openActionModal(queueNo) {
     currentSelectedQueueNo = queueNo;
-    document.getElementById('actionModalQueue').textContent = "Updating Ticket: " + queueNo;
+    const queueDisplay = document.getElementById('actionModalQueue');
+    if (queueDisplay) queueDisplay.textContent = "Updating Ticket: " + queueNo;
+
     const modal = document.getElementById('actionModal');
-    if (modal) modal.classList.remove('hidden');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+    }
 }
 
 function closeActionModal() {
     const modal = document.getElementById('actionModal');
-    if (modal) modal.classList.add('hidden');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+    }
 }
 
 function saveVisitAction() {
     if (!currentSelectedQueueNo) return;
 
-    const newStatus = document.getElementById('actionStatusSelect').value;
-    const selectedMed = document.getElementById('actionMedSelect').value;
+    const statusSelect = document.getElementById('actionStatusSelect');
+    const medSelect = document.getElementById('actionMedSelect');
 
-    let visitHistory = JSON.parse(sessionStorage.getItem('visitHistory')) || [];
+    const newStatus = statusSelect ? statusSelect.value : 'Updated';
+    const selectedMed = medSelect ? medSelect.value : '';
+
+    let visitHistory = JSON.parse(localStorage.getItem('visitHistory')) || [];
     let visit = visitHistory.find(v => v.queueNo === currentSelectedQueueNo);
 
     if (visit) {
@@ -111,7 +132,7 @@ function saveVisitAction() {
             visit.dispensedMed = selectedMed;
             deductInventory(selectedMed);
         }
-        sessionStorage.setItem('visitHistory', JSON.stringify(visitHistory));
+        localStorage.setItem('visitHistory', JSON.stringify(visitHistory));
     }
 
     let activeVisit = JSON.parse(sessionStorage.getItem('activeVisit'));
@@ -126,12 +147,12 @@ function saveVisitAction() {
 }
 
 function deductInventory(medName) {
-    let inventory = JSON.parse(sessionStorage.getItem('clinicInventory')) || defaultInventory;
+    let inventory = JSON.parse(localStorage.getItem('clinicInventory')) || defaultInventory;
     let item = inventory.find(i => i.name.toLowerCase().includes(medName.toLowerCase()));
     if (item && item.stock > 0) {
         item.stock -= 1;
         if (item.stock < 20) item.status = "Low Stock";
-        sessionStorage.setItem('clinicInventory', JSON.stringify(inventory));
+        localStorage.setItem('clinicInventory', JSON.stringify(inventory));
     }
 }
 
@@ -141,14 +162,10 @@ function switchStaffSection(sectionId, btnElement) {
     if (target) target.classList.remove('hidden');
 
     document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.style.background = 'transparent';
-        btn.style.color = '#64748b';
         btn.classList.remove('active');
     });
 
     if (btnElement) {
-        btnElement.style.background = '#eff6ff';
-        btnElement.style.color = '#2563eb';
         btnElement.classList.add('active');
     }
 }
@@ -177,7 +194,6 @@ document.addEventListener('click', function(event) {
 });
 
 window.toggleMobileSidebar = toggleMobileSidebar;
-
 window.switchStaffSection = switchStaffSection;
 window.openActionModal = openActionModal;
 window.closeActionModal = closeActionModal;

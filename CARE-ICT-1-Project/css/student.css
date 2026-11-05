@@ -281,6 +281,27 @@ textarea:focus { border-color: var(--primary); }
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
 }
+/* --- FIXED RESPONSIVENESS & LAYOUT SCALING --- */
+.dashboard-layout {
+    display: flex;
+    min-height: calc(100vh - 70px);
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.content-area {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.card-box, .dashboard-section {
+    width: 100%;
+    box-sizing: border-box;
+}
 
 /* Mobile Screen responsiveness medyo nahirapan ako dto :(*/
 @media screen and (max-width: 768px) {
@@ -288,6 +309,10 @@ textarea:focus { border-color: var(--primary); }
         flex-direction: column !important;
         position: relative;
         overflow-x: hidden;
+    }
+
+    .dashboard-layout {
+        flex-direction: column !important;
     }
 
     .sidebar {
@@ -299,14 +324,21 @@ textarea:focus { border-color: var(--primary); }
         z-index: 10000 !important;
         transition: transform 0.3s ease-in-out;
         box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+        background: white;
     }
+
     .sidebar.mobile-open {
         transform: translateX(280px);
     }
 
-    .main-content {
+    .content-area, .main-content {
         padding: 15px !important;
         width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .card-box, .dashboard-section {
+        width: 100%;
         box-sizing: border-box;
     }
 
@@ -320,11 +352,7 @@ textarea:focus { border-color: var(--primary); }
         display: flex !important;
     }
 
-    .metrics-grid {
-        grid-template-columns: 1fr !important;
-    }
-
-    .grid-2 {
+    .metrics-grid, .grid-2 {
         grid-template-columns: 1fr !important;
     }
 }

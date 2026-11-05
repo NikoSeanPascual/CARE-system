@@ -39,7 +39,7 @@ function updateRestPreview() {
     }
 }
 
-// yung naghahandle ng mga  Visit Form Submission at Queue Generation
+// yung naghahandle ng mga Visit Form Submission at Queue Generation
 function handleVisitSubmit(event) {
     event.preventDefault();
 
@@ -98,6 +98,7 @@ function handleVisitSubmit(event) {
 
     const activeVisit = {
         queueNo: queueNo,
+        studentName: currentUser.name,
         symptoms: symptomList.join(', '),
         rest: maxRest + ' Mins',
         status: 'Pending Triage',
@@ -105,11 +106,14 @@ function handleVisitSubmit(event) {
         complaint: complaint,
         severity: maxSeverity
     };
+
+    // Save active visit for sidebar state
     sessionStorage.setItem('activeVisit', JSON.stringify(activeVisit));
 
-    let visitHistory = JSON.parse(sessionStorage.getItem('visitHistory')) || [];
+    // Save to persistent visitHistory array across portals
+    let visitHistory = JSON.parse(localStorage.getItem('visitHistory')) || [];
     visitHistory.unshift(activeVisit);
-    sessionStorage.setItem('visitHistory', JSON.stringify(visitHistory));
+    localStorage.setItem('visitHistory', JSON.stringify(visitHistory));
 
     updateActiveQueueDisplay(activeVisit);
     loadVisitHistory();
@@ -125,7 +129,7 @@ function loadVisitHistory() {
     const tbody = document.getElementById('historyTableBody');
     if (!tbody) return;
 
-    const visitHistory = JSON.parse(sessionStorage.getItem('visitHistory')) || [];
+    const visitHistory = JSON.parse(localStorage.getItem('visitHistory')) || [];
 
     if (visitHistory.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 20px;">No past clinic visits recorded yet.</td></tr>`;
@@ -145,14 +149,14 @@ function loadVisitHistory() {
 }
 
 function viewPassModal(queueNo) {
-    const visitHistory = JSON.parse(sessionStorage.getItem('visitHistory')) || [];
+    const visitHistory = JSON.parse(localStorage.getItem('visitHistory')) || [];
     const visit = visitHistory.find(v => v.queueNo === queueNo);
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || {};
 
     if (!visit) return;
 
     document.getElementById('modalQueueNo').textContent = visit.queueNo;
-    document.getElementById('modalStudentName').textContent = currentUser.name || 'Student';
+    document.getElementById('modalStudentName').textContent = visit.studentName || currentUser.name || 'Student';
     document.getElementById('modalStudentID').textContent = currentUser.identifier || '---';
     document.getElementById('modalStudentGrade').textContent = (currentUser.grade || '') + ' ' + (currentUser.section || '');
     document.getElementById('modalVisitTime').textContent = visit.time;
@@ -234,9 +238,10 @@ function switchSection(sectionId, btnElement) {
 function handleLogout() {
     sessionStorage.removeItem('currentUser');
     sessionStorage.removeItem('activeVisit');
-    sessionStorage.removeItem('visitHistory');
+    // Does NOT delete localStorage.getItem('visitHistory') so data persists across logins
     window.location.href = '../index.html';
 }
+
 function toggleMobileSidebar() {
     const sidebar = document.querySelector('.sidebar');
     if (sidebar) {
