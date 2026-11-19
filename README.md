@@ -1,6 +1,7 @@
 # ✚ C.A.R.E. — Campus Health, Medical Assessment, and Record Entry System
 
 **C.A.R.E.** is a client-side web application designed to streamline campus clinic operations, digital student health check-ins, triage queuing, and medical supply tracking. Built with pure **HTML5**, **CSS3**, and **Vanilla JavaScript**, it provides tailored dashboards for Students, Clinic Staff, and System Administrators (Head School Nurse) using browser-based local storage.
+**Limitations** as this is made with pure vanilla javascript i didnt put every features so I am limited on what I can add
 
 ---
 
